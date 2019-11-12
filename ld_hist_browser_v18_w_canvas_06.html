@@ -1,0 +1,2391 @@
+<!DOCTYPE html>
+    <html>
+<head>
+    <title>Alternative LuftDaten viewer </title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css"
+    />
+
+    <!-- NEW LEAFLE! -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+    integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+
+    <!-- fonts via google -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+
+    <!-- canvas layer -->
+    <script src="js/L.CanvasLayer.js"></script>
+
+    <!-- d3 --> <!-- NEEEDED? -- WELLs FOR THE COLOUR SCALE :( -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div id="time_marker_box_outer_outer">
+        <div id="time_marker_box__left_element">/ / / /  </div>
+        <div id="time_marker_box__central_element">LOADING DATA - PLEASE WAIT ;) </div>        
+        <div id="time_marker_box__right_element">/ / / / /</div>
+    </div>
+
+    <div id="interface">
+
+
+        <div id="date_selection_box__outer_outer">
+
+
+            <div id="date_selection_box__year_and_month">
+                    -
+            </div>
+
+
+            <div id="date_selection_box__current_day">
+                    - 
+            </div>
+
+
+            <div id="date_selection_box__day_selection__arrow_left"></div>
+
+
+            <div id="date_selection_box__day_selection__arrow_right"></div>
+
+
+            <div id="date_selection_box__day_selection__horizontal_backgound_line"></div>
+
+
+            <div id="date_selection_box__day_selection__calendarbox"></div>
+
+        </div>
+
+
+        <div id="time_selection_box__outer_outer">
+
+
+            <div id="time_selection_box__current_time_indication__outer_outer">
+
+
+                <div id="time_selection_box__current_time_indication__current_hour">
+                    0
+                </div>
+
+
+                <div id="time_selection_box__current_time_indication__vertical_line_in_middle">
+                    
+                </div>
+
+
+                <div id="time_selection_box__current_time_indication__current_minute">
+                    0
+                </div>
+
+            </div>     
+
+
+
+            <div id="time_selection_box__backgound">                
+
+
+                <div id="time_selection_box__backgound__hours_listing_row">
+
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 00% - 10px);"> 00 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 12.5% - 10px);"> 03 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 25% - 10px);"> 06 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 37.5% - 10px);"> 09 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 50% - 10px);"> 12 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 62.5% - 10px);"> 15 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 75% - 10px);"> 18 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 87.5% - 10px);"> 21 </div>
+                    <div class="hour_listing_box" style="position:absolute; left: calc( 100% - 10px);"> 24 </div>
+
+                </div>
+
+
+                <div id="time_selection_box__backgound__light_horizonal_line__back_edition"></div>
+
+                <!-- <div id="time_selection_box__backgound__light_horizonal_line__foreground_edition"> </div> -->
+
+                <div id="date_selection_box__day_selection__block_showing_available_time_data"></div>
+
+                <div id="date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data"></div>                    
+
+            </div>
+
+
+            <!-- for mouse/touch interactions, so they don't get picked up by other objects -->
+            <div id="time_selection_box__transparent_for_click_foreground"></div>
+    
+
+
+
+        </div>
+
+
+
+        <div id="big_popup_calendar__outer_outer" class="hide_me__aka__display_none__class">
+
+
+            <div id="big_popup_calendar__current_month_n_year__outer">
+
+                <div id="big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year"></div>
+
+                <div id="big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow"> </div>
+
+                <div id="big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow"> </div>
+
+            </div>
+
+
+            <div id="big_popup_calendar__actual_calendar__outer"> </div>
+
+
+            <div id="big_popup_calendar__bottom_exit_button"></div>
+
+
+        </div>
+
+
+
+        <div id="playback_control_box__outer_outer">
+
+            <div id="playback_control_box__play_mode_button">
+            </div>            
+
+            <div id="playback_control_box__left_double_arrows">
+                >>
+            </div>            
+
+            <div id="playback_control_box__right_double_arrows">
+                <<
+            </div>            
+
+        </div>
+    
+
+
+        <div id="debug_window">
+            DEBUG OUTPUT! :) 
+        </div>       
+
+
+
+    </div>
+
+
+    <div id="loading_data_element__whole_screen_element">
+        
+        <div id="loading_data_element__dialogue_box_outer">
+            <div id="loading_data_element__dialogue_box_outer__loading_data_text">
+                loading data!
+            </div>
+            
+            <div id="loading_data_element__dialogue_box_outer__cancel_button_and_text">
+                cancel loading!
+            </div>
+        </div>
+    </div>   
+
+
+    <a id="luftdaten_attribution__link" href="http://luftdaten.info">
+        <div id="luftdaten_attribution__outer">
+            <div id="luftdaten_attribution__text">data & collaboration :</div>
+            <div id="luftdaten_attribution__luftdaten_logo"></div>
+        </div>
+    </a>
+
+    <script>
+
+
+        
+
+        
+        
+        ////////////////////////
+
+
+
+        var positions = [];
+
+        var markers = [];
+
+
+        // --------------------------------  
+
+
+        ///////// BIG SWITCHES
+
+        var load_data = false;
+
+
+        var has_data_been_loaded_for_first_time = false;
+
+        // do Version 1 style drawing 
+        var allow_old_school_mouse_x_vs_screen_visualisation_interaction = false;
+        
+
+        ///////// PARAMETERS 
+
+
+
+        // --- data / objects     
+
+
+        // - data url formating
+
+        var data_url__filename_beginning = "24_hrs_pm_data__starting_from__";
+        var data_url__filename_end = ".json";
+
+        // var data_sample_rates = [ "180", "240", "300", "360", "600", "900", "1800" ];
+        var curr_data_time_interval = 480;
+
+        var base_urls_to_data__at_different_intervals = {};
+
+        base_urls_to_data__at_different_intervals[ String( curr_data_time_interval ) ] = 
+        "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+
+
+        var number_of_sample_periods_in_a_day__CALCULATED = 24*60*60/curr_data_time_interval;
+
+
+        // what's currently used 
+        var base_url_to_data = base_urls_to_data__at_different_intervals[ String( curr_data_time_interval ) ];
+
+        // this is where the days' worth of data live
+        // - each object is one day's data, 
+        //  and the key to each object is a hash - eg 2019.01.03 -> 2019-1-3 
+        var days_data_holder = { };
+
+
+        // --- which is the current date
+
+        var current_dateTime__as_Date_obj = new Date();
+        var current_dateTime__as_YY_MM_DD_string = false;
+
+        // - CURRENT DATA INDEX, relative to the day's data 
+        // - based on the decimal position of the slider and num of values in a day
+
+        var current_day_data_index = 0;
+
+
+        // --- current calendar (day) month, year 
+        /*
+
+           - used to hold the current month/year the big calendar shows
+                - i.e. when the month is advanced/reduced, 
+                this is the variable that holds the current month/year shown 
+                - NOTE : the date is set to the current date, 
+                            when the calendar is opened. 
+                            DON'T (:) set the current date according to this.
+
+        */
+
+        var current_calendar_temp_date = false;
+
+
+
+        // --- colour scale 
+
+        var options = {
+            // radius: 25,
+            opacity: 0.6,
+            duration: 200,
+            valueDomain: [ 20, 40, 60, 100, 500],
+            colorRange: [ '#00796B', '#F9A825', '#E65100', '#DD2C00', '#960084']
+        };
+
+        // initialise the colour scale! 
+        var _colorScale = d3.scale.linear()
+            .domain( options.valueDomain )
+            .range( options.colorRange )
+            .clamp(true);
+
+
+
+        // --- preselected DOM elements 
+
+        // time bar - outer outer box 
+        var time_selection_box__outer_outer__DOM_obj = -1;
+        var time_selection_box__outer_outer__ID_name = "time_selection_box__outer_outer";
+
+        // bar showing available time in the current day's data 
+        var date_selection_box__day_selection__block_showing_available_time_data__DOM_obj = -1;
+        // and its DOM ID name 
+        var date_selection_box__day_selection__block_showing_available_time_data__id_name = "date_selection_box__day_selection__block_showing_available_time_data";
+
+        // var showing unavailable time in the current day's data 
+        var date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__DOM_obj = -1;
+        // and its DOM ID name 
+        var date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__id_name = "date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data";
+
+
+        //// current time indicator 
+        // forground for clicks… 
+        var time_selection_box__transparent_for_click_foreground__DOM_obj = -1;
+        var time_selection_box__transparent_for_click_foreground__ID_name = "time_selection_box__transparent_for_click_foreground";        
+        //
+        var time_selection_box__current_time_indication__outer_outer__DOM_obj = -1;
+        var time_selection_box__current_time_indication__outer_outer__ID_name = "time_selection_box__current_time_indication__outer_outer";
+        // - and the current hour text box 
+        var time_selection_box__current_time_indication__current_hour__DOM_obj = -1;
+        var time_selection_box__current_time_indication__current_hour__ID_name = "time_selection_box__current_time_indication__current_hour";
+        // - and the current minute 
+        var time_selection_box__current_time_indication__current_minute__DOM_obj = -1;
+        var time_selection_box__current_time_indication__current_minute__ID_name = "time_selection_box__current_time_indication__current_minute";
+
+
+        //// smaller calendar 
+
+        // left/right arrows
+        var date_selection_box__day_selection__arrow_left__DOM_obj = -1;
+        var date_selection_box__day_selection__arrow_left__id_name = "date_selection_box__day_selection__arrow_left";
+
+        var date_selection_box__day_selection__arrow_right__DOM_obj = -1;
+        var date_selection_box__day_selection__arrow_right__id_name = "date_selection_box__day_selection__arrow_right";
+
+        // current month year
+        var date_selection_box__year_and_month__DOM_obj = -1;
+        var date_selection_box__year_and_month__id_name = "date_selection_box__year_and_month";
+
+        // current day 
+        var date_selection_box__current_day__DOM_obj = -1;
+        var date_selection_box__current_day__id_name = "date_selection_box__current_day";
+
+        // small calndar illustration box 
+        var small_calendar__date_selection_box__day_selection__calendarbox__DOM_obj = -1;
+        var small_calendar__date_selection_box__day_selection__calendarbox__id_name = "date_selection_box__day_selection__calendarbox";
+        
+
+        //// bigger calendar
+        var big_popup_calendar__outer_outer__DOM_obj = -1;
+        var big_popup_calendar__outer_outer__id_name = "big_popup_calendar__outer_outer";
+
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow__DOM_obj = -1;
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow__id_name = "big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow";
+
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year__DOM_obj = -1;
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year__id_name = "big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year";
+
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow__DOM_obj = -1;
+        var big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow__id_name = "big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow";
+
+        var big_popup_calendar__actual_calendar__outer__DOM_obj = -1;
+        var big_popup_calendar__actual_calendar__outer__id_name = "big_popup_calendar__actual_calendar__outer";
+
+
+        var big_popup_calendar__bottom_exit_button__DOM_obj = -1;
+        var big_popup_calendar__bottom_exit_button__id_name = "big_popup_calendar__bottom_exit_button";
+
+
+        //// loading data screen
+
+
+        var loading_data_element__whole_screen_element__DOM_obj = -1;
+        var loading_data_element__whole_screen_element__id_name = "loading_data_element__whole_screen_element";
+        var loading_data_element__dialogue_box_outer__cancel_button_and_text__DOM_obj = -1;
+        var loading_data_element__dialogue_box_outer__cancel_button_and_text__id_name = "loading_data_element__dialogue_box_outer__cancel_button_and_text";
+
+
+
+        // --- event handling random bits 
+
+        // var touch_mouse_pointer_mouseup_events_array = [ 'pointerup', 'pointerout', 'MSPointerUp', 'MSPointerOut' ];
+        var touch_mouse_pointer_mouseup_events_array = [ 'pointerup', 'MSPointerUp' ];
+
+        // --- canvas matters
+
+        // canvas context 
+        var ctx = -1; 
+
+        // looked up id of canvas layer id 
+        var current_canvas_layer_id = -1;
+
+        // --- visual distance measurements
+
+
+        // conver the time to a decimal of the current day length ( ie whole time selector bar )
+        var current_timeslider_position_on_bar_as_decimal = 0.0;
+
+        // - calculated times of day based on relative current time slider selctor position
+        var curr_absolute_minute_in_day_according_to_curr_decimal_time_slider_position = 0;
+        var curr_hour_in_the_day_according_to_curr_time_slider_position = 0;
+        var curr_minute_in_the_day_according_to_curr_time_slider_position = 0;        
+
+        // - timeline 
+
+        // total timeline box area - looked up 
+        var timeline_outer_outer_total_width_px = -1;
+
+        // time bar - left/right offset - looked up from css
+        // - use offsetLeft / offsetRight
+        // - or getComputedStyle - https://www.w3schools.com/jsref/jsref_getcomputedstyle.asp
+        // SET POSITION USING : one.style.left = "40px";
+        var timeline_bar_left_offset_px = -1;
+        var timeline_bar_right_offset_px = -1;
+
+        // total current width of time area - CALCULATED 
+        // - use offsetWidth
+        // - or getComputedStyle - https://www.w3schools.com/jsref/jsref_getcomputedstyle.asp
+        var timeline_bar__CALCULATED__total_current_width = -1;
+
+        // - time indicator - looked up from css/dom
+        var timeline_outer_outer__left_offset = -1;
+        var timeline__curr_time_indicator__total_HALFwidth_px = -1;
+        var timeline__curr_time_indicator__curr_time_vertical_bar_loc_px = -1
+
+        // - MOUSE / TOUCH COORDINATES IN TIMELINE
+
+        var timeline_area__mouse_and_touch_coords_x = 0;
+
+
+        var timeline_area__touch_POINTS = [];
+
+        // - is mouse/touch DOWN? 
+        var timeline_area__is_mouse_down = false;
+
+
+        // - data and slider possibilites… 
+
+        var timeline_ara__available_data_START_as_timeline_decimal_position = 0;
+        var timeline_ara__available_data_END_as_timeline_decimal_position = 1;
+
+
+        // - some random time variables 
+
+        var seconds_in_minute = 60;
+        var minutes_in_an_hour = 60;
+        var hours_in_day = 24;
+        var total_minutes_in_the_day = hours_in_day*minutes_in_an_hour;
+        var total_seconds_in_a_day = total_minutes_in_the_day * seconds_in_minute;
+
+
+
+
+
+
+
+        ////////// ========================. METHODS ===================
+
+
+        var toggle_classname_in_given_dom_element = function( element, classname ){
+
+            console.log(">>>> toggling class |"+classname+"| on the given element");
+
+            if (element.classList) { 
+                element.classList.toggle( classname );
+            } else {
+                // For IE9
+                var classes = element.className.split(" ");
+                var i = classes.indexOf( classname );
+
+                if (i >= 0) {
+                    classes.splice(i, 1);
+                }
+                else {
+                    classes.push( classname );
+                    element.className = classes.join(" "); 
+                }
+                //
+            }
+            //
+        }
+
+
+
+        var select_div_elements = function(){
+
+            console.log(">>> select_div_elements() ");
+
+            window.time_marker_box_outer_outer = document.getElementById("time_marker_box_outer_outer");
+            window.time_marker_box__central_element = document.getElementById("time_marker_box__central_element");
+            window.time_marker_box__left_element = document.getElementById("time_marker_box__left_element");
+            window.time_marker_box__right_element = document.getElementById("time_marker_box__right_element");
+
+        }
+
+
+        // same idea, but V2 ( object oriented version version … )
+
+        var select_V2pt0__div_thigns = function(){
+            
+            console.log("\n>>> select_V2pt0__div_thigns() ");
+
+            // select timeslider things … 
+            select_timeslider_relevant_dom_elements();
+
+            // select calendar things …
+            select_calendar_relevant_dom_elemtns();
+
+        }
+
+
+
+        var set_start_and_end_time__on_screen__according_to_data = function(){
+
+            console.log("\n>>> set_start_and_end_time__on_screen__according_to_data() ");
+
+            window.time_marker_box__left_element.innerHTML = window.data2.data_time_period_start;
+            window.time_marker_box__right_element.innerHTML = window.data2.data_time_period_end;
+
+        }
+
+
+        // object voriened version of above 
+        var set_start_and_end_time__on_screen__according_to_data__OBJECT_ORIENTED_VERSION = function( current_dateTime__as_YY_MM_DD_string ){
+
+            console.log("\n>>> set_start_and_end_time__on_screen__according_to_data() curr date : |"+current_dateTime__as_YY_MM_DD_string+"|");
+
+            window.time_marker_box__left_element.innerHTML = days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_start;
+            window.time_marker_box__right_element.innerHTML = days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_end;
+
+        }
+
+
+
+        var make_all_timestamps = function(){
+
+            console.log( ">>> make_all_timestamps() - ideally they should range from "+window.data2.data_time_period_start+" - "+window.data2.data_time_period_end );     
+
+            // debug 
+            console.log("--- num of values per sensor : "+window.num_of_data_values_per_sensor );
+
+            // make a date object for beginning with 
+            var start_time_as_date_obj = new Date( window.data2.data_time_period_start );
+
+            // make out object - it's one item shorter, as we've already got the start time in there
+            window.all_timestamps_in_data = [ window.data2.data_time_period_start ];            
+
+            for( var i = 0; i < window.num_of_data_values_per_sensor; i++ ){
+
+                var time_in_s = start_time_as_date_obj.setSeconds( start_time_as_date_obj.getSeconds() + window.data2.individual_data_sample_length_in_seconds );
+
+                window.all_timestamps_in_data.push( new Date( time_in_s )  );
+            }
+
+            console.log( "---- ok! done making "+window.num_of_data_values_per_sensor+" new dates. with start date of "+window.all_timestamps_in_data[0]+" and end date of "+window.all_timestamps_in_data[ window.all_timestamps_in_data.length-1 ] );
+            console.log("\t ---- got times array of length "+window.all_timestamps_in_data.length  );
+        }
+
+
+
+        // object oriented version 
+        var make_all_timestamps__OBJECT_ORIENTED_VERSION = function( current_dateTime__as_YY_MM_DD_string ){
+
+            console.log( ">>> make_all_timestamps() - ideally they should range from "+days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_start+" - "+days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_end );     
+
+            // debug 
+            console.log("--- num of values per sensor : "+window.num_of_data_values_per_sensor );
+
+            // make a date object for beginning with 
+            var start_time_as_date_obj = new Date( days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_start );
+
+            // make out object - it's one item shorter, as we've already got the start time in there
+            window.all_timestamps_in_data = [ days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data_time_period_start ];            
+
+            for( var i = 0; i < window.num_of_data_values_per_sensor; i++ ){
+
+                var time_in_s = start_time_as_date_obj.setSeconds( start_time_as_date_obj.getSeconds() + days_data_holder[ current_dateTime__as_YY_MM_DD_string ].individual_data_sample_length_in_seconds );
+
+                window.all_timestamps_in_data.push( new Date( time_in_s )  );
+            }
+
+            console.log( "---- ok! done making "+window.num_of_data_values_per_sensor+" new dates. with start date of "+window.all_timestamps_in_data[0]+" and end date of "+window.all_timestamps_in_data[ window.all_timestamps_in_data.length-1 ] );
+            console.log("\t ---- got times array of length "+window.all_timestamps_in_data.length  );
+        }        
+
+
+
+        // MAX PM VAL! 
+        // MAX PM VAL! 
+        // MAX PM VAL! 
+        //
+        // use this to calculate the visualistaion of pm values 
+        // 
+
+        // test updating the circles 
+        var random_blink = function( interval_in_ms ){
+
+            window.setInterval( function(){
+
+                //  console.log("blinking at time "+( new Date() ) );
+
+                window.feature.style("opacity", function(){
+
+                    return Math.random() ;
+                });
+
+            }, interval_in_ms  );
+        }
+
+
+
+
+        // // //  playback over time :) 
+
+        var playback_time_data_at_given_time_interval = function( interval_in_ms, advance_how_many_frames_per_frame_update ){
+
+            console.log("\n>>> playback_time_data_at_given_time_interval() ");
+
+            window.counter = 0 ;
+
+            window.playback_setInterval_instance_id  = window.setInterval( function(){
+
+                console.log("--- playing back time countr i "+window.counter );
+
+                playback_time_data_at_given_time_interval();
+
+                test_draw_from_time_data( window.counter )
+
+                window.counter += advance_how_many_frames_per_frame_update;
+
+                // cancel the playback if we've played more frames than in the data
+                if(  window.counter > window.num_of_data_values_per_sensor ){
+                    console.log("--- ending playback! ");
+                    clearInterval( window.playback_setInterval_instance_id );
+                }
+
+            }, interval_in_ms )
+        }
+
+
+        // // parse loaded data 
+        var parse_loaded_data = function(){
+
+            console.log("\n>>> parse_loaded_data() ");
+
+        }
+
+
+
+
+        // // set visuals according to current data 
+
+        var set_visuals_according_to_days_data_refresh = function(){
+
+            console.log("\n>>> set_visuals_according_to_days_data_refresh() ");
+
+            // --- updae map markers 
+
+            // position_markers_on_map__after_map_move__WITH_D3__NEW_NEW();
+            position_markers_on_map__after_map_move__WITH_D3__NEW_OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );            
+
+            // set_start_and_end_time__on_screen__according_to_data();
+            set_start_and_end_time__on_screen__according_to_data__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+
+
+            // --- update slider 
+
+            get_current_day_relative_data_index__based_on_relative_slider_position();
+
+            get_time_of_day_accoridng_to_curr_time_slider_decimal_position();
+
+            // update the text in the slider
+            update_time_slider_text_to_show_current_time_of_day();
+
+            // update the slider position accordingly 
+            set_timeslide_current_position_market_to_current_position_in_data();
+            
+
+
+            // ---- updae small and large calendar dates and texts 
+
+            // // // update calendar dates
+            small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+            big_calendar__set_current_vis_date_as_curr_calendar_date();
+
+            big_calendar__set_current_year_month_text_to_current_temp_date();
+
+            big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days();
+
+        }
+
+
+
+        // load the new data - WITH TIME! 
+        //
+        var load_new_time_data = function(){
+
+            console.log("\n>>> load_new_time_data() - master data loading switch === |"+String( load_data ).toUpperCase()+"|");
+
+            if( load_data ){
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/latest_data_since_midnight__20190322_17something.json";
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/24_hrs_pm_data__starting_from__2019-1-9.json";
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__180_s_intervals/24_hrs_pm_data__starting_from__2019-3-22.json"
+                // save as window.data2 
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/24_hrs_pm_data__starting_from__2019-3-1__2019-3-8.json"
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/24_hrs_pm_data__starting_from__2019-3-1__2019-3-24.json"
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/24_hrs_pm_data__starting_from__2019-2-25__2019-3-15.json";
+                // var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__180_s_intervals/24_hrs_pm_data__starting_from__2019-3-22.json";
+                var url = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/24_hrs_pm_data__starting_from__2019-3-1__2019-3-2.json";
+                // fetch js, good boy! 
+                fetch( url )
+                    .then( function( resp ){ return resp.json() })
+                    .then( function(resp2){ 
+                        // store data                 
+                        window.data2 = resp2; 
+                        // feedback
+                        console.log("--- got data! width "+window.data2.data__p1_values.length+" sensors! - each with a length of "+window.data2.data__p1_values[0].length ); 
+                        // next step
+                        e(); 
+                    }) ;
+
+            }
+
+        }
+
+
+
+        // parse the data 
+        //
+        // - make it d3 friendly, with one line per sensor
+        var parse_data_into_something_d3_friendly = function(){
+
+            console.log("\n>>> parse_data_into_something_d3_friendly() - got data with "+window.data2.data__p1_values.length+" sensors, each of length "+window.data2.data__p1_values[0].length );
+
+            var starttime = new Date();
+
+            // window.data3 = [];
+
+            window.num_of_sensors = window.data2.data__p1_values.length;
+            window.num_of_data_values_per_sensor = window.data2.data__p1_values[0].length;
+
+            window.parsed_data = new Array( window.num_of_sensors );
+
+            // go per sensor 
+            for( var sensor_id_i = 0; sensor_id_i < window.num_of_sensors; sensor_id_i++ ){
+
+                // start making the current line 
+                // - make it according to one sensor 
+                window.parsed_data[ sensor_id_i ] = { sensor_id : window.data2.sensor_ids[ sensor_id_i ], latlon : window.data2.lat_lon[ sensor_id_i ], p1_data : window.data2.data__p1_values[ sensor_id_i ], p2_data : window.data2.data__p2_values[ sensor_id_i ]  };
+
+            }
+
+            console.log("--- done parsing sensor data in "+( new Date() - starttime )+" seconds ");
+        }
+
+
+
+
+        var parse_loaded_data_into_something_visualisation_friendly = function( relevant_day_as_YY_MM_DD_string ){
+
+            console.log("\n>>> parse_loaded_data_into_something_visualisation_friendly() - got data with "+days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values.length+" sensors, each of length "+days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values[0].length );
+
+            var starttime = new Date();
+
+            // window.data3 = [];
+
+            // set num of sensors and num of values per sensor
+            set_curr_num_of_sensors_and_value_per_sensor_according_to_curr_data_set( relevant_day_as_YY_MM_DD_string );
+
+        /*
+            window.num_of_sensors = days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values.length;
+            window.num_of_data_values_per_sensor = days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values[0].length;
+        */
+
+            // make space for the parsed values
+            days_data_holder[ relevant_day_as_YY_MM_DD_string ].parsed_data = new Array( window.num_of_sensors );
+
+            // go per sensor 
+            for( var sensor_id_i = 0; sensor_id_i < window.num_of_sensors; sensor_id_i++ ){
+
+                // start making the current line 
+                // - make it according to one sensor 
+                days_data_holder[ relevant_day_as_YY_MM_DD_string ].parsed_data[ sensor_id_i ] = { sensor_id : days_data_holder[ relevant_day_as_YY_MM_DD_string ].sensor_ids[ sensor_id_i ], latlon : days_data_holder[ relevant_day_as_YY_MM_DD_string ].lat_lon[ sensor_id_i ], p1_data : days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values[ sensor_id_i ], p2_data : days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p2_values[ sensor_id_i ]  };
+
+            }
+
+            //
+            console.log("--- done parsing sensor data in "+( new Date() - starttime )+" seconds ");
+        }
+
+
+
+
+        // as the functino name says… 
+        var set_curr_num_of_sensors_and_value_per_sensor_according_to_curr_data_set = function( relevant_day_as_YY_MM_DD_string ){
+
+            console.log("\n>>> set_curr_num_of_sensors_and_value_per_sensor_according_to_curr_data_set() - got data with "+days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values.length+" sensors, each of length "+days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values[0].length );
+
+            // window.data3 = [];
+            window.num_of_sensors = days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values.length;
+            window.num_of_data_values_per_sensor = days_data_holder[ relevant_day_as_YY_MM_DD_string ].data__p1_values[0].length;
+
+        }
+
+
+
+        /////// remove the current markers
+
+        var remove_current_markers = function(){
+
+            console.log("\n>>> remove_current_markers () ");
+
+            window.feature.remove()
+        }
+
+
+
+        ////// the new position markers :) 
+
+        var position_markers_on_map__after_map_move__WITH_D3__NEW_NEW = function(){
+
+            console.log("\n>>> position_markers_on_map__after_map_move__WITH_D3__NEW_NEW() ");
+
+            window.feature = window.g.selectAll("circle")
+                                .data( window.parsed_data )
+                                    .enter()  
+                                    .append( "circle" )
+                                    // .style( "stroke", "rgba(255, 255, 128, 0.2 )" )
+                                    .style( "stroke", "none" )
+                                    // .style( "stroke-width", 1.5 )
+                                    // .style( "fill", "yellow" )
+                                    .style( "opacity", options.opacity )
+                                    // .style( "opacity", 1 )
+                                    // .style( "fill", "rgba( 255,255,255,0.1)" )
+                                    .attr("r", 4 );                                    
+        }
+
+
+
+
+
+        ////// the more object oriented version
+
+        var position_markers_on_map__after_map_move__WITH_D3__NEW_OBJECT_ORIENTED_VERSION = function( current_dateTime__as_YY_MM_DD_string ){
+
+            console.log("\n>>> position_markers_on_map__after_map_move__WITH_D3__NEW_OBJECT_ORIENTED_VERSION() - of day : |"+current_dateTime__as_YY_MM_DD_string+"|" );
+
+            console.log("--- NOT POSITIONING MARKERS - disabled waiting for CANVAS VERSION ");
+
+/*
+            // REDUNDANT? 
+            window.feature = window.g.selectAll("circle").remove();
+
+            window.feature = window.g.selectAll("circle")
+                                .data( days_data_holder[ current_dateTime__as_YY_MM_DD_string ].parsed_data )
+                                    .enter()  
+                                    .append( "circle" )
+                                    // .style( "stroke", "rgba(255, 255, 128, 0.2 )" )
+                                    .style( "stroke", "none" )
+                                    // .style( "stroke-width", 1.5 )
+                                    // .style( "fill", "yellow" )
+                                    .style( "opacity", options.opacity )
+                                    // .style( "opacity", 1 )
+                                    // .style( "fill", "rgba( 255,255,255,0.1)" )
+                                    .attr("r", 4 );                                    
+*/
+        }
+
+
+
+
+        //////// --------- loading screen dom stuff
+
+
+        // show the loading screen 
+        var show_loading_screen = function(){
+
+            console.log(">>>> show_loading_screen() ");
+
+            loading_data_element__whole_screen_element__DOM_obj.style.display = "block";
+
+        }
+
+
+        // hide the loading screen 
+        var hide_loading_screen = function(){
+
+            console.log(">>>> hide_loading_screen() ");
+
+            loading_data_element__whole_screen_element__DOM_obj.style.display = "none";
+
+        }        
+
+
+
+        ///////// time slider stuff ===========================
+
+
+
+        ////// set time slider position accordin go the decimal position of 
+        //      where the time slider is supposed to be. 
+
+        var set_timeslide_current_position_market_to_current_position_in_data = function(){
+
+            console.log( ">>>> set_timeslide_current_position_market_to_current_position_in_data() " );
+
+            // calculate the position 
+            var relevant_time_selector_position_in_pixels = ( ( timeline_bar__CALCULATED__total_current_width * current_timeslider_position_on_bar_as_decimal ) + timeline_bar_left_offset_px ) - timeline__curr_time_indicator__total_HALFwidth_px ;    
+            
+            // set the position finally
+            time_selection_box__current_time_indication__outer_outer__DOM_obj.style.left = relevant_time_selector_position_in_pixels+"px";
+        }
+
+
+
+        ////// calclate decimal position of the curr mouse/touch coords
+        // relative to time slider 
+
+        var timeslider__get_decimal_position_of_time_indicator_based_on_mouseTouch_coords = function(){
+
+            console.log(">>>> timeslider__get_decimal_position_of_time_indicator_based_on_mouseTouch_coords() ");
+
+            console.log("--- mouse x position relative to available time bar on timeline : |"+timeline_area__mouse_and_touch_coords_x+"|" );
+
+            // assign a temporary variable 
+            current_timeslider_position_on_bar_as_decimal__temp =  timeline_area__mouse_and_touch_coords_x / timeline_bar__CALCULATED__total_current_width ;
+
+            // only update if the mouse decimal is within 0-1
+            if( current_timeslider_position_on_bar_as_decimal__temp >= timeline_ara__available_data_START_as_timeline_decimal_position && current_timeslider_position_on_bar_as_decimal__temp <= timeline_ara__available_data_END_as_timeline_decimal_position ){
+
+                current_timeslider_position_on_bar_as_decimal = current_timeslider_position_on_bar_as_decimal__temp;
+            }
+
+            console.log("--- current_timeslider_position_on_bar_as_decimal  "+current_timeslider_position_on_bar_as_decimal );
+        }
+
+
+
+        ////// set the time of day in the timeslider selector
+        //      - according to the current date obj and decimal time slider positoin
+
+        var get_time_of_day_accoridng_to_curr_time_slider_decimal_position = function(){
+
+            console.log(">>>> get_time_of_day_accoridng_to_curr_time_slider_decimal_position() got time slider decimal position of : "+current_timeslider_position_on_bar_as_decimal );
+
+
+            // and that translates to … in total minutes of the day
+            curr_absolute_minute_in_day_according_to_curr_decimal_time_slider_position = Math.floor( total_minutes_in_the_day * current_timeslider_position_on_bar_as_decimal );
+
+            // and then in terms of current hour 
+            curr_hour_in_the_day_according_to_curr_time_slider_position = Math.floor( curr_absolute_minute_in_day_according_to_curr_decimal_time_slider_position / minutes_in_an_hour ); 
+
+            curr_minute_in_the_day_according_to_curr_time_slider_position = curr_absolute_minute_in_day_according_to_curr_decimal_time_slider_position % minutes_in_an_hour;
+
+
+            console.log("---- ok : acc to decimal slider position ("+current_timeslider_position_on_bar_as_decimal+") got abs minute |"+curr_absolute_minute_in_day_according_to_curr_decimal_time_slider_position+"| curr hour +"+curr_hour_in_the_day_according_to_curr_time_slider_position+"|  curr minute |"+curr_minute_in_the_day_according_to_curr_time_slider_position+"|" );
+
+        }
+
+
+
+        /////// calculate the number of sample periods in the currnet bit of data
+        //
+
+        var calculate_number_of_sample_periods_FOR_THE_WHOLE_DAY___in_current_days_data__WHETHER_OR_NOT_THE_WHOLE_DAYS_DATA_IS_THERE = function(){
+
+            console.log(">>>> calculate_number_of_sample_periods_FOR_THE_WHOLE_DAY___in_current_days_data__WHETHER_OR_NOT_THE_WHOLE_DAYS_DATA_IS_THERE() : current_dateTime__as_YY_MM_DD_string : |"+current_dateTime__as_YY_MM_DD_string+"| sample length in currnet days' data : |"+days_data_holder[ current_dateTime__as_YY_MM_DD_string ].individual_data_sample_length_in_seconds+"| - ( total seconds in day : "+total_seconds_in_a_day+" )");
+
+            number_of_sample_periods_in_a_day__CALCULATED = Math.floor( total_seconds_in_a_day / days_data_holder[ current_dateTime__as_YY_MM_DD_string ].individual_data_sample_length_in_seconds );
+
+            console.log("--- got |"+number_of_sample_periods_in_a_day__CALCULATED+"| number of sample periods in the currnet day's data…" );
+        }
+
+
+        ///// get curr dta index based on the 
+        // 
+        // REMEMBER : UPDATE THIS TO LIMIT IT TO THE AVAILABLE DATA RANGE! 
+
+        var get_current_day_relative_data_index__based_on_relative_slider_position = function(){
+
+            console.log(">>>> get_current_day_relative_data_index__based_on_relative_slider_position() - current relative slider position : |"+current_timeslider_position_on_bar_as_decimal+"| curr sample window length : |"+"placeholder"+"|  - number of sample windows in day : |"+number_of_sample_periods_in_a_day__CALCULATED+"|" );
+
+            current_day_data_index = Math.round( number_of_sample_periods_in_a_day__CALCULATED * current_timeslider_position_on_bar_as_decimal );
+
+            console.log("---  current_day_data_index: |"+current_day_data_index+"|" );
+        }
+
+
+
+        ////// - update time of day text in slider to show current time
+        //
+
+        var update_time_slider_text_to_show_current_time_of_day = function(){
+
+            console.log(">>>> update_time_slider_text_to_show_current_time_of_day() - this time : "+curr_hour_in_the_day_according_to_curr_time_slider_position+":"+curr_minute_in_the_day_according_to_curr_time_slider_position );
+
+            // update the text! 
+            time_selection_box__current_time_indication__current_hour__DOM_obj.innerHTML = curr_hour_in_the_day_according_to_curr_time_slider_position;
+            time_selection_box__current_time_indication__current_minute__DOM_obj.innerHTML = curr_minute_in_the_day_according_to_curr_time_slider_position;
+
+        } 
+
+
+
+        ////// (pre) select relevant dom elements 
+
+        var select_timeslider_relevant_dom_elements = function(){
+
+            console.log("\n>>> select_timeslider_relevant_dom_elements() ");
+
+
+            time_selection_box__outer_outer__DOM_obj = document.getElementById( time_selection_box__outer_outer__ID_name );
+            // debug 
+            console.log("--- checking if time_selection_box__outer_outer__DOM_obj exists : ")
+            console.log("----- "+time_selection_box__outer_outer__DOM_obj.id );
+
+            time_selection_box__transparent_for_click_foreground__DOM_obj = document.getElementById( time_selection_box__transparent_for_click_foreground__ID_name );
+            // debug 
+            console.log("--- checking if time_selection_box__transparent_for_click_foreground__DOM_obj exists : ")
+            console.log("----- "+time_selection_box__transparent_for_click_foreground__DOM_obj.id );
+
+            date_selection_box__day_selection__block_showing_available_time_data__DOM_obj = document.getElementById( date_selection_box__day_selection__block_showing_available_time_data__id_name );
+
+            // debug 
+            console.log("--- checking if date_selection_box__day_selection__block_showing_available_time_data__DOM_obj exists : ")
+            console.log("----- "+date_selection_box__day_selection__block_showing_available_time_data__DOM_obj.id );
+
+            date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__DOM_obj = document.getElementById( date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__id_name );
+
+            // debug 
+            console.log("--- checking if date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__DOM_obj exists : ")
+            console.log("----- "+date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data__DOM_obj.id );
+
+            time_selection_box__current_time_indication__outer_outer__DOM_obj = document.getElementById( time_selection_box__current_time_indication__outer_outer__ID_name );
+
+            // debug 
+            console.log("--- checking if time_selection_box__current_time_indication__outer_outer__DOM_obj exists : ")
+            console.log("----- "+time_selection_box__current_time_indication__outer_outer__DOM_obj.id );
+
+            time_selection_box__current_time_indication__current_hour__DOM_obj = document.getElementById( time_selection_box__current_time_indication__current_hour__ID_name );
+
+            // debug 
+            console.log("--- checking if time_selection_box__current_time_indication__current_hour__DOM_obj exists : ")
+            console.log("----- "+time_selection_box__current_time_indication__current_hour__DOM_obj.id );
+
+            time_selection_box__current_time_indication__current_minute__DOM_obj = document.getElementById( time_selection_box__current_time_indication__current_minute__ID_name );
+
+            // debug 
+            console.log("--- checking if time_selection_box__current_time_indication__current_minute__DOM_obj exists : ")
+            console.log("----- "+time_selection_box__current_time_indication__current_minute__DOM_obj.id );
+
+        }
+
+
+
+        var select_calendar_relevant_dom_elemtns = function(){
+
+            console.log(">>>> select_calendar_relevant_dom_elemtns() ");
+
+            // // SMALL CALENDAR 
+
+            date_selection_box__day_selection__arrow_left__DOM_obj = document.getElementById( date_selection_box__day_selection__arrow_left__id_name ) ;
+
+            date_selection_box__day_selection__arrow_right__DOM_obj = document.getElementById( date_selection_box__day_selection__arrow_right__id_name ) ;
+
+            date_selection_box__year_and_month__DOM_obj = document.getElementById( date_selection_box__year_and_month__id_name ) ;
+
+            date_selection_box__current_day__DOM_obj = document.getElementById( date_selection_box__current_day__id_name ) ;
+
+            small_calendar__date_selection_box__day_selection__calendarbox__DOM_obj = document.getElementById( small_calendar__date_selection_box__day_selection__calendarbox__id_name ) ;
+
+
+            // // BIG CALENDAR
+
+            //// and that big calendar … 
+            big_popup_calendar__outer_outer__DOM_obj = document.getElementById( big_popup_calendar__outer_outer__id_name );
+
+            big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow__DOM_obj = document.getElementById( big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow__id_name );
+
+            big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year__DOM_obj = document.getElementById( big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year__id_name );
+
+            big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow__DOM_obj = document.getElementById( big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow__id_name );
+
+            big_popup_calendar__actual_calendar__outer__DOM_obj = document.getElementById( big_popup_calendar__actual_calendar__outer__id_name );
+
+            big_popup_calendar__bottom_exit_button__DOM_obj = document.getElementById( big_popup_calendar__bottom_exit_button__id_name );      
+
+
+            // // LOADING SCREEN
+
+            // outer
+            loading_data_element__whole_screen_element__DOM_obj = document.getElementById( loading_data_element__whole_screen_element__id_name );
+
+            // cancel button 
+            loading_data_element__dialogue_box_outer__cancel_button_and_text__DOM_obj = document.getElementById( loading_data_element__dialogue_box_outer__cancel_button_and_text__id_name ) ;
+
+        }
+
+
+
+        ////// lookup relevant distances on startup 
+
+        var lookup_relevant_timeslider_distances_on_startup = function(){
+
+            console.log("\n>>>> lookup_relevant_time_slider_distances_on_startup() ");
+
+            // timeline outer area offset
+            timeline_outer_outer__left_offset = time_selection_box__outer_outer__DOM_obj.offsetLeft;
+
+            // timeline__curr_time_indicator__total_HALFwidth_px width : 
+            timeline__curr_time_indicator__total_HALFwidth_px = Math.floor( time_selection_box__current_time_indication__outer_outer__DOM_obj.offsetWidth/2 );
+
+            console.log("---- timeline__curr_time_indicator__total_HALFwidth_px.offsetWidth : |"+timeline__curr_time_indicator__total_HALFwidth_px+"|" )
+
+            timeline_bar_left_offset_px = date_selection_box__day_selection__block_showing_available_time_data__DOM_obj.offsetLeft;
+            console.log("---- timeline_bar_left_offset_px : |"+timeline_bar_left_offset_px+"|");
+
+            // should be the same as above 
+            timeline_bar_right_offset_px = timeline_bar_left_offset_px;
+            console.log("---- timeline_bar_right_offset_px : |"+timeline_bar_right_offset_px+"|");            
+        }
+
+
+
+        ////// lookup relevant timeslider distances on window resize 
+
+        var lookup_relevant_timeslider_distances_on_window_resize = function(){
+
+            console.log("\n>>> lookup_relevant_time_slider_distances_on_window_resize() ");
+
+            timeline_outer_outer_total_width_px = time_selection_box__outer_outer__DOM_obj.offsetWidth;
+            console.log("---- timeline_outer_outer_total_width_px : |"+timeline_outer_outer_total_width_px+"|");
+
+            timeline_bar__CALCULATED__total_current_width = timeline_outer_outer_total_width_px - ( timeline_bar_left_offset_px + timeline_bar_right_offset_px );
+            console.log("---- timeline_bar__CALCULATED__total_current_width : |"+timeline_bar__CALCULATED__total_current_width+"|");
+
+        }
+
+
+        //////   ---------------- big calendar things ------
+
+
+
+        /*
+
+            - when opening the calendar, 
+                please do reset the current calendar date/month to the current showing date/month
+
+        */
+
+
+        ////  remove the calendar days from the big calendar
+
+        var big_calendar__wipe_all_days = function(){
+
+            console.log(">>>> big_calendar__wipe_all_days() ");
+
+            while( big_popup_calendar__actual_calendar__outer__DOM_obj.hasChildNodes() ){
+
+                console.log("--- removing childNode ");
+
+                big_popup_calendar__actual_calendar__outer__DOM_obj.removeChild( big_popup_calendar__actual_calendar__outer__DOM_obj.lastChild );
+            }
+
+        }
+
+
+
+        ////  set the current main current visualisation day to the current calendar day
+
+        var big_calendar__set_current_vis_date_as_curr_calendar_date = function(){
+
+            console.log(">>>> big_calendar__wipe_all_days() ");
+
+            current_calendar_temp_date = current_dateTime__as_Date_obj;
+
+            console.log("--- just set the current day ("+current_dateTime__as_Date_obj+") as the current calendar date |"+current_calendar_temp_date+"|" );
+
+        }
+
+
+
+        /// set big (temp) calendar YEAR.MONTH text according to the current temp date
+
+        var big_calendar__set_current_year_month_text_to_current_temp_date = function(){
+
+            console.log(">>>> big_calendar__set_current_year_month_text_to_current_temp_date() - setting the big calendar YEAR.MONTH numbers/date to the current temp date :|"+current_calendar_temp_date+" >> "+current_calendar_temp_date.getFullYear()+"."+current_calendar_temp_date.getMonth()+1 );
+
+            // just set it 
+            // - the +1 is there because the Date object starts the month count from 0 / zero
+            big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year__DOM_obj.innerText = current_calendar_temp_date.getFullYear()+"."+(current_calendar_temp_date.getMonth()+1);
+        }
+
+
+        //// set small calendar YEAR, MONTH, DAY, according to current date… 
+
+        var small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date = function(){
+
+            console.log(">>>> small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date() ");
+
+            date_selection_box__year_and_month__DOM_obj.innerText = current_dateTime__as_Date_obj.getFullYear()+"."+( current_dateTime__as_Date_obj.getMonth()+1);
+
+            date_selection_box__current_day__DOM_obj.innerText = current_dateTime__as_Date_obj.getDate();
+        }
+
+
+
+        //// advance or reduce the current month by N +/0 months 
+
+        var return_date_thats_N_months_advanced_or_retraced = function( in_date, advance_by_N_months ){
+
+            console.log(">>>> return_date_thats_N_months_advanced_or_retraced() - move indate : |"+in_date+"| by |"+advance_by_N_months+"| months ");
+
+            var out_date = new Date( in_date.setMonth( in_date.getMonth() + advance_by_N_months ) );
+
+            console.log("--- new advanced month date… : "+out_date );
+
+            return out_date;
+
+        }
+
+
+
+        // - helper function to the big calendar function… 
+
+        // advance the temp calendar date by one month 
+        var big_calendar__advance_calendar_month_by_one_month = function(){
+
+            console.log(">>>> big_calendar__advance_calendar_month_by_one_month() advancing current_calendar_temp_date ("+current_calendar_temp_date+") by one month to … ");
+            current_calendar_temp_date = return_date_thats_N_months_advanced_or_retraced( current_calendar_temp_date, 1 );
+
+            console.log("-- to : |"+current_calendar_temp_date+"|" );
+        }
+
+
+        // retract the temp calendar date by one month 
+        var big_calendar__retract_calendar_month_by_one_month = function(){
+
+            console.log(">>>> big_calendar__retract_calendar_month_by_one_month() advancing current_calendar_temp_date ("+current_calendar_temp_date+") by one month to … ");
+            current_calendar_temp_date = return_date_thats_N_months_advanced_or_retraced( current_calendar_temp_date, -1 );
+
+            console.log("-- to : |"+current_calendar_temp_date+"|" );
+        }
+
+
+
+        //// same as for months, but for days
+
+        var return_date_that_N_days_advanced_or_retracted = function( in_date, advance_by_N_days ){
+
+            console.log(">>>> return_date_that_N_days_advanced_or_retracted() - move indate : |"+in_date+"| by |"+advance_by_N_days+"| days ");
+
+            var out_date = new Date(  in_date.setDate( in_date.getDate() + advance_by_N_days  ) );
+
+            console.log("---- new re/advanced date : "+out_date );
+
+            return out_date;
+        }
+
+
+        // helper function for the current date (and small calendar)
+
+        var current_date__advance_by_one_day = function(){
+
+            console.log(">>>> current_date__advance_by_one_day() from "+current_dateTime__as_Date_obj );
+
+            current_dateTime__as_Date_obj = return_date_that_N_days_advanced_or_retracted( current_dateTime__as_Date_obj, +1 );
+            // and make the text version of the current date … 
+            current_dateTime__as_YY_MM_DD_string = generate_date_as_year_month_day_string( current_dateTime__as_Date_obj );
+
+            console.log("--- to : "+current_dateTime__as_Date_obj );
+        }
+
+        // and the reverse
+        var current_date__retract_by_one_day = function(){
+
+            console.log(">>>> current_date__retract_by_one_day() from "+current_dateTime__as_Date_obj );
+
+            current_dateTime__as_Date_obj = return_date_that_N_days_advanced_or_retracted( current_dateTime__as_Date_obj, -1 );
+            // and make the text version of the current date … 
+            current_dateTime__as_YY_MM_DD_string = generate_date_as_year_month_day_string( current_dateTime__as_Date_obj );
+
+
+            console.log("--- to : "+current_dateTime__as_Date_obj );
+        }
+
+
+
+        //// find the numebr of days in current month
+
+        var return_num_of_days_in_given_month__input_via_date = function( in_date ){
+
+            console.log("-- finding the number of days in date month : |"+in_date+"|" );
+
+            var next_month_first_day = new Date( in_date.getFullYear(), in_date.getMonth()+1, 1  );
+            console.log("--- next_month_first_day : "+next_month_first_day );
+
+            var in_date_month_last_date = new Date( next_month_first_day.setDate(  next_month_first_day.getDate() -1 )  );
+            console.log("--- in_date_month_last_date : "+in_date_month_last_date );
+
+            var num_of_days_in_indate_month = in_date_month_last_date.getDate();
+            console.log("--- --- num_of_days_in_indate_month : "+num_of_days_in_indate_month );
+
+            return num_of_days_in_indate_month;
+        }
+
+
+        ///// find which day of the week the first day of given month
+
+        var return_day_number_of_first_day_of_given_month = function( in_date ){
+
+            console.log( ">>>> return_day_number_of_first_day_of_given_month() of in date "+in_date );
+
+            var in_date__day_num = in_date.getDay();
+
+            console.log("--- first day of month num : "+in_date__day_num );
+
+            return in_date__day_num;
+        }
+
+
+
+        ///// fill big calendar with the days of this month … 
+
+        var big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days = function(){
+
+            console.log(">>>> big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days() ");
+
+            //// figure out parameters
+
+
+            // get number of blank days… 
+            // var num_of_blank_days = return_day_number_of_first_day_of_given_month( new Date( current_calendar_temp_date.getFullYear(), current_calendar_temp_date.getMonth(), 1 ) ) -1;
+            var num_of_blank_days = return_day_number_of_first_day_of_given_month( new Date( current_calendar_temp_date.getFullYear(), current_calendar_temp_date.getMonth(), 0 ) );
+
+            console.log("--- ---- num of blank days : "+num_of_blank_days );
+
+
+            // get number of days in this month 
+            var num_of_calendar_days_of_curr_temp_month = return_num_of_days_in_given_month__input_via_date( current_calendar_temp_date );
+
+
+            //// wipe calendra
+            big_calendar__wipe_all_days();
+
+            //// add the blank days
+
+            // absolute day acount - good for adding returns / enters in calendar
+            var absolute_calendar_day_count = 1 ; 
+
+            for( var i = 0; i < num_of_blank_days; i++ ){
+
+                // make dom element 
+                var curr_element = document.createElement("div");
+
+                // set a class 
+                curr_element.classList.add("date_individual", "big_popup_calendar__actual_calendar__blank_date");
+
+                // // // append ! 
+                big_popup_calendar__actual_calendar__outer__DOM_obj.appendChild( curr_element );
+
+                //
+                absolute_calendar_day_count++;                  
+            }
+
+            //// add the current month's days - and mark the current day! 
+
+
+
+
+            // set up some reusable variables : 
+            var curr_temp_cal_year  = current_calendar_temp_date.getFullYear();
+            var curr_temp_cal_month = current_calendar_temp_date.getMonth();
+
+            // loop finally… and create the real calendar days 
+            for( var i = 1; i <= num_of_calendar_days_of_curr_temp_month; i++ ){
+
+                // make dom element 
+                var curr_element = document.createElement("div");
+
+                // set a class 
+                curr_element.classList.add("date_individual");
+
+                // add a sepcial marker on the current date
+                // for comparison, in the loop below, get the temp date as a string
+                curr_temp_date__as__YY_MM_DD__string = generate_date_as_year_month_day_string( new Date( curr_temp_cal_year, curr_temp_cal_month, i) );
+
+                if( curr_temp_date__as__YY_MM_DD__string === current_dateTime__as_YY_MM_DD_string ){
+                    curr_element.classList.add("big_popup_calendar__actual_calendar__current_date");
+                }
+
+                // add some text
+                curr_element.innerText = i ;
+
+                // add some data 
+                curr_element.dataset.curr_cal_month =  curr_temp_cal_month ;
+                curr_element.dataset.curr_cal_year =   curr_temp_cal_year ;
+                curr_element.dataset.curr_cal_date =    i;
+
+                // add some interaction 
+        /*
+                curr_element.addEventListener("click", function(){
+                    console.log("--- click! my number is "+this.dataset.curr_cal_year+"/"+this.dataset.curr_cal_month+"/"+this.dataset.curr_cal_day );
+                });
+        */
+
+                // 
+                touch_mouse_pointer_mouseup_events_array.map( function(d){
+
+                    curr_element.addEventListener( d, function(d){
+                         console.log("--- click! my number is "+this.dataset.curr_cal_year+"/"+this.dataset.curr_cal_month+"/"+this.dataset.curr_cal_date );
+
+                         // make a date obj of the desired date
+                         desired_date_to_load_as__date_obj = new Date( this.dataset.curr_cal_year, this.dataset.curr_cal_month, this.dataset.curr_cal_date );
+
+                         // get the date as a string
+                         desired_date_to_load_as__YY_MM_DD_string = generate_date_as_year_month_day_string( desired_date_to_load_as__date_obj );
+
+                         // finally, try loading it! 
+                         check_if_date_available__and_load_and_setup_if_needed( desired_date_to_load_as__date_obj );
+
+                    }, false );
+
+                });
+
+                // // // append ! 
+                big_popup_calendar__actual_calendar__outer__DOM_obj.appendChild( curr_element );
+
+                // // add a blank line? 
+                if( absolute_calendar_day_count % 7 == 0 ){
+                    var curr_element = document.createElement("br");
+                    big_popup_calendar__actual_calendar__outer__DOM_obj.appendChild( curr_element );
+                }
+
+                // increment count of days 
+                absolute_calendar_day_count++;                  
+            }
+
+
+
+        }
+
+
+        //////   ---------------- bind event listeners 
+
+
+        //////  as the function name says :) 
+
+        var bind_event_listeners_for_map_update_on_map_pan_zoom_change = function(){
+
+            console.log("\n>>> bind_event_listeners_for_map_update_on_map_pan_zoom_change() ");
+
+            //// register event handlers on map move 
+            map.on("viewreset", update_d3_layer__NEW_NEW );
+            // and do a quick update for the first viewing… 
+            //
+            // 20190402
+            //// update_d3_layer__NEW_NEW();                                        
+
+        }
+
+
+
+        ////// bind event listeners for various interactive manipulations 
+        var bind_event_listeners_for_interactive_events = function(){
+
+            console.log(">>>> bind_event_listeners_for_interactive_events() ");
+
+            // interesting code about how to execute the window reize
+            // only after a delay 
+            // //  https://developer.mozilla.org/en-US/docs/Web/Events/resize
+
+            window.addEventListener('resize', evt => {
+
+                console.log("--- window resize! ");
+
+                lookup_relevant_timeslider_distances_on_window_resize();
+
+                set_timeslide_current_position_market_to_current_position_in_data();
+            });
+
+
+
+            ////// for the TIMELINE AREA EVENTS
+
+            
+            var events = ['pointerover', 'pointerdown', 'pointermove', 'pointerup', 'pointerout', 'pointercancel', 'MSPointerOver', 'MSPointerDown', 'MSPointerMove', 'MSPointerUp', 'MSPointerOut', 'MSPointerCancel'];
+            for (var i=0, l=events.length; i<l; i++) {
+                // 20190413
+               // time_selection_box__outer_outer__DOM_obj.addEventListener(events[i],  timeline_input_event_handler, false );
+               // - testig with selecting the transparent foreground instead of the backgound
+               //.  so there's hoepfully less interference with touch evens… 
+               time_selection_box__transparent_for_click_foreground__DOM_obj.addEventListener(events[i],  timeline_input_event_handler, false );
+            }
+            // suppress context menu
+            time_selection_box__outer_outer__DOM_obj.addEventListener('contextmenu', function(e) { e.preventDefault(); }, false)
+        }            
+
+
+
+        //// bind events and event listeners to calendar matters
+
+        var bind_event_listeners_to_calendar_matters = function(){
+
+            //// bind evens to the calendar clicks … 
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                date_selection_box__day_selection__arrow_left__DOM_obj.addEventListener( d, function(){ 
+
+                    console.log("--- please advance the small calendar date by a day");
+
+                    current_date__retract_by_one_day();
+
+                    small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+                    console.log("--- DON'T FORGET TO UPDATE THE DAY OF THE VISUALISTION! ");
+
+                    // finally, try loading it! 
+                    check_if_date_available__and_load_and_setup_if_needed( current_dateTime__as_Date_obj );
+
+
+                    }, false );
+                });
+
+
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                date_selection_box__day_selection__arrow_right__DOM_obj.addEventListener( d, function(){ 
+
+                    console.log("--- please advance the small calendar date by a day");
+
+                    current_date__advance_by_one_day();
+
+                    small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+                    console.log("--- DON'T FORGET TO UPDATE THE DAY OF THE VISUALISTION! ");
+
+                    // finally, try loading it! 
+                    check_if_date_available__and_load_and_setup_if_needed( current_dateTime__as_Date_obj );
+
+
+                    }, false );
+                });
+
+
+
+            // SMALL CALENDAR : to the calendar ILLUSTRATION on the small calendar,
+            // to toggle the view of the big calendar 
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                small_calendar__date_selection_box__day_selection__calendarbox__DOM_obj.addEventListener( d, function(){ 
+
+                        // copy the calendar date to the big calendar 
+                        big_calendar__set_current_vis_date_as_curr_calendar_date();
+
+                        // update the YEAR.MONTH text of big calendar
+                        big_calendar__set_current_year_month_text_to_current_temp_date();
+
+                        // make the calendar days with the current days … 
+                        big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days();
+
+                        // hide/show big calendar 
+                        toggle_classname_in_given_dom_element( big_popup_calendar__outer_outer__DOM_obj, "hide_me__aka__display_none__class" );
+                    }, false );
+                });
+
+
+            ///// LARGE CALENDAR : to the left/ righ big calendar arrows 
+
+            // LARGE CALENDAR :  to the left arrow of the big calendar
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow__DOM_obj.addEventListener( d, function(){ 
+
+                        console.log("--- click left arrow ");
+
+                        // advance the current month date, in the temp calendar date by a month
+                        big_calendar__retract_calendar_month_by_one_month();
+
+                        // update the year.month text
+                        big_calendar__set_current_year_month_text_to_current_temp_date()
+
+                        // make the calendar days with the current days … 
+                        big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days();
+
+                    }, false );
+                });
+
+            // LARGE CALENDAR : to the right arrow of the big calendar
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow__DOM_obj.addEventListener( d, function(){ 
+
+                        console.log("--- click right arrow ");
+
+                        // advance the current month date, in the temp calendar date by a month
+                        big_calendar__advance_calendar_month_by_one_month();
+
+                        // update the year.month text
+                        big_calendar__set_current_year_month_text_to_current_temp_date()
+
+                        // make the calendar days with the current days … 
+                        big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days();
+
+                    }, false );
+                });
+
+
+                touch_mouse_pointer_mouseup_events_array.map( function(d){
+                big_popup_calendar__bottom_exit_button__DOM_obj.addEventListener( d, function(){ 
+
+                        // copy the calendar date to the big calendar 
+                        big_calendar__set_current_vis_date_as_curr_calendar_date();
+
+                        // update the YEAR.MONTH text of big calendar
+                        big_calendar__set_current_year_month_text_to_current_temp_date();
+
+                        // make the calendar days with the current days … 
+                        big_calendar__wipe_calendar__and__fill_calendar_with_curr_temp_month_days();
+
+                        // hide/show big calendar 
+                        toggle_classname_in_given_dom_element( big_popup_calendar__outer_outer__DOM_obj, "hide_me__aka__display_none__class" );
+                    }, false );
+                });
+
+
+
+                // // // cancel button for the loading screen 
+
+                touch_mouse_pointer_mouseup_events_array.map( function(d){
+                loading_data_element__dialogue_box_outer__cancel_button_and_text__DOM_obj.addEventListener( d, function(){ 
+
+                        console.log("--- CLICK on the cancel button! ");
+
+                    }, false );
+                });
+
+        }     
+
+
+        ////// related event handler to timeine interactions 
+
+        var timeline_input_event_handler = function( e ){
+
+            // console.log(">>>> timeline_input_event_handler() - pointer at :  "+e.clientX+" / "+e.clientY );
+
+            timeline_area__mouse_and_touch_coords_x = Math.floor( e.clientX - timeline_outer_outer__left_offset - timeline_bar_left_offset_px );
+
+            // FOR DEBUGGING ON MOBILE ! 
+            // DEBUG 
+            debug_window_DOM_element = document.getElementById( "debug_window" );      
+
+            // make the out text
+            //// debug_window_message = "";
+
+            // starting with the curr mouse/touch coords 
+            //// debug_window_message += "x/y : "+e.clientX+" ("+timeline_area__mouse_and_touch_coords_x+") / "+e.clientY+" <br>"
+
+
+            // stop scrolling etc
+            e.preventDefault();
+
+            /* fairly ugly, unoptimised approach of manually replicating the targetTouches array */
+            switch (e.type) {
+                case 'pointerdown':
+                    console.log("--- pointerdown !");
+                    ////  debug_window_message += "pointerdown <br>";
+                    timeline_area__is_mouse_down = true;
+                case 'pointermove':
+                case 'MSPointerDown':
+                    // console.log("--- MSPointerDown !");
+                    // debug_window_message += "MSPointerDown";
+                case 'MSPointerMove':
+                    e.preventDefault();
+                    for (var i = 0, found = false, l = timeline_area__touch_POINTS.length; i<l; i++) {
+                        if (timeline_area__touch_POINTS[i].pointerId == e.pointerId) {
+                            timeline_area__touch_POINTS[i] = e;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        timeline_area__touch_POINTS.push(e);
+                    }
+                    break;
+                case 'pointerup':
+                    console.log("--- pointerup !");
+                    // debug_window_message += "pointerup <br/>";      
+                    timeline_area__is_mouse_down = false;          
+                case 'pointerout':
+                case 'pointercancel':
+                case 'MSPointerUp':
+                    // console.log("--- MSPointerUp !");
+                    // debug_window_message += "MSPointerDown";
+                case 'MSPointerOut':
+                    console.log("--- MSPointerOut !");
+                    // // debug_window_message += "MSPointerOut <br>";
+                    timeline_area__is_mouse_down = false;
+                case 'MSPointerCancel':
+                    for (var i = 0, l = timeline_area__touch_POINTS.length; i<l; i++) {
+                        if (timeline_area__touch_POINTS[i].pointerId == e.pointerId) {
+                            timeline_area__touch_POINTS.splice(i,1);
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+
+            // IF MOUSE/TOUCH DOWN 
+            // update the mouse position data && update slider pos 
+            if( timeline_area__is_mouse_down ){
+
+                // figure out the decimal position 
+                timeslider__get_decimal_position_of_time_indicator_based_on_mouseTouch_coords();
+
+                // get relevant data index according to the slider decimal position 
+                get_current_day_relative_data_index__based_on_relative_slider_position();
+
+                // get time of day according to current time selector position 
+                // GET THIS ACCORDING TO THE CURRENT DATA SAMPLE INDEX? 
+                get_time_of_day_accoridng_to_curr_time_slider_decimal_position();
+
+                // update the text in the slider
+                update_time_slider_text_to_show_current_time_of_day();
+
+                // update the slider position accordingly 
+                set_timeslide_current_position_market_to_current_position_in_data();
+
+                // and draw something? 
+                draw_from_time_data__object_oriented_version();
+            }
+
+
+        /*
+            // DEBUG 
+            // add the mousedown status 
+            debug_window_message += "<br> timeline_area__is_mouse_down : "+timeline_area__is_mouse_down ;
+            // DEBUG 
+            // add the mousedown status 
+            debug_window_message += "<br> current_timeslider_position_on_bar_as_decimal : "+current_timeslider_position_on_bar_as_decimal ;
+            // DEBUG 
+            // update debug window 
+            debug_window_DOM_element.innerHTML = debug_window_message;
+        */
+
+        }
+
+
+
+
+        //////   ----------------  draw map 
+
+
+
+        ////// the new draw 
+
+        var update_d3_layer__NEW_NEW = function(){
+
+            console.log("\n>>> update_d3_layer__NEW_NEW() ");
+
+            console.log("--- NOT UPDATING D3 layer - WAITING FOR CANVAS VERSION ");
+
+/*            
+
+            window.feature.attr( "transform", function(d){
+                var loc = [ d.latlon[0], d.latlon[1] ];
+                var lat_to_px = map.latLngToLayerPoint( loc ).x;
+                var lng_to_px = map.latLngToLayerPoint( loc ).y ;
+                return "translate("+lat_to_px+","+lng_to_px+")";
+            });
+
+            console.log("--- map zoom level : "+map.getZoom() );
+*/
+
+            // test draw with canvas! 
+            map._layers[ current_canvas_layer_id ].drawLayer();
+
+        }
+
+
+
+
+        ////// test draw from time data index 
+
+        var test_draw_from_time_data = function( time_index_as_i ){
+
+            console.log("\n>>> test_draw_from_time_data() of index |"+time_index_as_i );
+
+            console.log("--- NOT test_draw_from_time_data - WAITING FOR CANVAS VERSION ");
+
+/*
+            window.feature.style("fill", function(d,i){
+                var curr_data_val = d.p1_data[ time_index_as_i ];
+
+                // Colours : different handling of zero values 
+                // quick check for zero values
+                // - replace a zero value's colour with none…  
+                if( curr_data_val === 0 ){
+                    return "none";
+                }else{ 
+                    return _colorScale( curr_data_val );
+                }
+            
+                // - DISABLED : the normal version, using only the colour scale
+                //              - but which renders zero values black
+                // return _colorScale( curr_data_val );
+
+            });          
+
+
+            // and update the time indication ( up in the middle of the window, in text )
+            window.time_marker_box__central_element.innerHTML = window.all_timestamps_in_data[ time_index_as_i ];
+*/  
+            
+            // test draw with canvas! 
+            console.log( "SOON - test drawing with canvas ");
+            console.log( "- map._layers : ");
+            console.log( map._layers );
+            console.log( map._layers[ current_canvas_layer_id ] );
+            map._layers[ current_canvas_layer_id ].drawLayer();
+
+        }
+
+
+
+        ////// object oriented version of the drawing 
+        //
+        var draw_from_time_data__object_oriented_version = function(){
+
+            console.log("\n>>> draw_from_time_data__object_oriented_version() of index |"+current_day_data_index );
+
+            console.log("--- NOT DRAWING - disabled waiting for CANVAS VERSION ");
+/*
+            window.feature.style("fill", function(d,i){
+
+                var curr_data_val = d.p1_data[ current_day_data_index ];
+
+                // Colours : different handling of zero values 
+                // quick check for zero values
+                // - replace a zero value's colour with none…  
+                if( curr_data_val === 0 ){
+                    return "none";
+                }else{ 
+                    return _colorScale( curr_data_val );
+                }
+
+            });          
+
+            // TEMP TEMP TEMP 
+            console.log("--- current time at data sample period index "+current_day_data_index+" : "+all_timestamps_in_data[ current_day_data_index ] );
+  */
+
+            // draw canvas stuff 
+            map._layers[ current_canvas_layer_id ].drawLayer();
+
+        }        
+
+
+
+        ///////// bind mouse move listener to winodw
+
+        var bind_mouseove_listener__for_interactive_interactions = function(){
+
+            console.log("\n>>> bind_mouseove_listener__for_interactive_interactions() ");
+
+            // remove the mouselistener just in case of a previous binding
+            // // window.removeEventListener( "mousemove", false );
+
+            // now add the event listener. 
+            window.addEventListener( "mousemove", function( event ){
+                     window.mouseX = event.pageX; 
+                     window.mouseY = event.pageY;
+                    //
+                     console.log("--- mouseX / mouseY : "+window.mouseX+","+window.mouseY );
+
+                     // get the decimal positions of the mouse vs screen size 
+                     window.mouseX_vs_screen_w_decimal = window.mouseX / window.innerWidth;
+                     window.mouseY_vs_screen_w_decimal = window.mouseY / window.innerHeight;
+                     //
+                     console.log("--- mouseX/Y decimals vs screen w/h : "+window.mouseX_vs_screen_w_decimal+","+window.mouseY_vs_screen_w_decimal );
+
+                     // now redraw with the relevant time :) 
+                     var current_data_index = Math.floor( window.mouseX_vs_screen_w_decimal * window.num_of_data_values_per_sensor ) ;
+                     console.log(" - current data index : "+current_data_index+" / "+window.num_of_data_values_per_sensor );
+
+                     // now redraw
+                     test_draw_from_time_data( current_data_index );
+
+                }, false );
+        }
+
+
+
+        //////   ----------------  data loading 
+
+
+        ////// VERSION v2 things : 
+
+
+        // // - check if a particular days' data is available, and load it, 
+        //      - and possibly set up interface according to data, 
+        //          when the data is loaded 
+
+        var check_if_date_available__and_load_and_setup_if_needed = function( date_to_check__as_date_obj  ){
+
+            console.log("\n>>> check_if_date_available__and_load_and_setup_if_needed() - got date : |"+date_to_check__as_date_obj+"|");
+
+            // set the current day date as the current day
+            current_dateTime__as_Date_obj = date_to_check__as_date_obj;
+
+            // [ NOTE : this is also done in the set_visuals_according_to_days_data_refresh() ] 
+            //   set the small calendar date text to the current date
+            // // small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+            // get date as string - can be useful as a key for the day data objects array             
+            // - input : date object 
+            relevant_day_as_YY_MM_DD_string = generate_date_as_year_month_day_string( date_to_check__as_date_obj );
+            // relevant_day_as_YY_MM_DD_string = day_as_string;
+
+            // check that day data array for date
+            if( days_data_holder[ relevant_day_as_YY_MM_DD_string ] ){
+
+                console.log("\t --- OK - DATA EXISTS for |"+relevant_day_as_YY_MM_DD_string+"| !");
+
+                // DATA EXISTS! 
+                // - go ahead and SETUP INTERFACE ACCORDING TO THE DATA …
+
+                // Needed : 
+                //      - generate timestamps for current day 
+                //      - set which date we're showing [ current_dateTime__as_YY_MM_DD_string ]                
+                //      - update top of screen displays
+                //      - update map markers with new data
+                //      - redraw from frame zero.
+
+
+                // get the date as a YYYY-MM-DD string that cna 
+                // - be used as an array key
+                current_dateTime__as_YY_MM_DD_string = relevant_day_as_YY_MM_DD_string;
+
+                // reset frame index 
+                current_data_index = 0;
+                // current_day_data_index = 0;
+                current_timeslider_position_on_bar_as_decimal = 0;
+
+                // find all the timestamps
+                // make_all_timestamps();
+                make_all_timestamps__OBJECT_ORIENTED_VERSION( relevant_day_as_YY_MM_DD_string );
+
+                // update visuals
+                set_visuals_according_to_days_data_refresh();
+
+                //
+                update_d3_layer__NEW_NEW()
+
+                // finally draw 
+                test_draw_from_time_data( current_data_index );
+
+
+            }else{
+
+                console.log("\t --- OK - NEEDS LOADING DATA for |"+relevant_day_as_YY_MM_DD_string+"| !");
+
+                // DATA DOESN'T EXIST
+                // - NEEDS LOADING ETC … 
+
+
+                // Needed : 
+                //      - download data
+                load_days_data__and_setup_as_appropriate( date_to_check__as_date_obj );
+
+                //      - set relevant day as the current day ( current_dateTime__as_YY_MM_DD_string )
+                //      - ( store it as object )
+                //      - parse the data into a relevant form 
+                //      - set up markers on screen. 
+                //      - update the top of the screen w info 
+                //      - update the screen… 
+                
+            }   
+            //         
+        }
+
+
+
+        // // - load a given day's data, 
+        //      - set up interface according to data,if relevant 
+        //          when the data is loaded 
+
+        var load_days_data__and_setup_as_appropriate = function( days_date_to_load ){
+
+            console.log("\n>>> load_days_data__and_setup_as_appropriate() - load_new_data_if_date_not_avail : |"+days_date_to_load+"|" );
+
+
+
+            // show the loading screen! 
+            show_loading_screen();
+
+
+            // get relevant url 
+            relevant_day_as_YY_MM_DD_string = generate_date_as_year_month_day_string( days_date_to_load );
+            relev_url = generate_url_for_data_from_date_object( days_date_to_load );
+
+            // load + setup if needed 
+            fetch( relev_url )
+                .then( function( response ){ 
+                                    console.log("--- fetching data : got data! ");
+                                    return response.json(); 
+                                })
+                .then( function( response_json ){
+                                    console.log("--- got parsed JSON : saving! ");
+                                    // window.data3 = 
+                                    
+                                    // get the date as a YYYY-MM-DD string that cna 
+                                    // - be used as an array key
+                                    current_dateTime__as_YY_MM_DD_string = relevant_day_as_YY_MM_DD_string;
+
+                                    // save data in the days array 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    days_data_holder[ current_dateTime__as_YY_MM_DD_string ] = response_json;
+
+                                    // do the traditional setup 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // // window.data2 = days_data_holder[ current_dateTime__as_YY_MM_DD_string ];
+
+                                    // setup 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+                                    // TEMPORARY TEMPORARY TEMPORARY 
+
+                                    // //
+                                    // test_new__PART_TWO();
+
+
+                                    // reset frame index 
+                                    current_data_index = 0;
+                                    // current_day_data_index = 0;
+                                    current_timeslider_position_on_bar_as_decimal = 0;
+
+                                    // and then the more object oriented version
+                                    parse_loaded_data_into_something_visualisation_friendly( current_dateTime__as_YY_MM_DD_string );
+
+                                    // calculate the number of time periods in the day's data
+                                    calculate_number_of_sample_periods_FOR_THE_WHOLE_DAY___in_current_days_data__WHETHER_OR_NOT_THE_WHOLE_DAYS_DATA_IS_THERE();
+
+                                    // find all the timestamps
+                                    // make_all_timestamps();
+                                    make_all_timestamps__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+                                    // set markers 
+                                    // - update info at the top of the screen
+                                    set_visuals_according_to_days_data_refresh()
+
+                                    // set start and end times on screen
+                                    // set_start_and_end_time__on_screen__according_to_data();
+                                    //// set_start_and_end_time__on_screen__according_to_data__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+                                    // only do this the first time 
+                                    // the data is loaded 
+
+                                    // make sure the map markers updates on map change 
+                                    bind_event_listeners_for_map_update_on_map_pan_zoom_change();
+                                    update_d3_layer__NEW_NEW()
+
+                                    // - control time and update time with mouse movement
+                                    if( allow_old_school_mouse_x_vs_screen_visualisation_interaction === 1 ){
+                                        bind_mouseove_listener__for_interactive_interactions();
+                                    }
+
+                                
+                                    // remove loading screen 
+                                    hide_loading_screen();
+
+                                    // draw the first frame! 
+                                    test_draw_from_time_data( current_day_data_index );                                    
+                    });
+        }
+
+
+        // // - generate a valid url based on the givne date object 
+        //
+
+        var generate_url_for_data_from_date_object = function( in_date_object ){
+
+            console.log("\n>>> generate_url_for_data_from_date_object : generateing url from date obejct : |"+in_date_object+"|");
+
+            // - build url 
+            out_url = base_urls_to_data__at_different_intervals[ String( curr_data_time_interval ) ]+data_url__filename_beginning+generate_date_as_year_month_day_string( in_date_object )+data_url__filename_end;
+
+            console.log("\t --- generated url |"+out_url+" from input date |"+in_date_object+"|");
+
+            return out_url;
+        }
+
+
+        var generate_date_as_year_month_day_string = function( in_date_object ){
+
+            console.log("\n>>> generate_date_as_year_month_day_string() of in_date : |"+in_date_object+"|" );
+
+               // - fetch consitutent parts of a date 
+            var year_in_input = in_date_object.getFullYear();
+            // var month_in_input = in_date_object.getMonth();
+            var month_in_input = in_date_object.getMonth()+1;
+            var day_in_input = in_date_object.getDate();
+
+            // - build url 
+            var date_as_year_month_day_string = year_in_input+"-"+month_in_input+"-"+day_in_input;
+
+            console.log("\t --- got date string : |"+date_as_year_month_day_string+"| from input date |"+in_date_object+"|" );
+
+            return date_as_year_month_day_string;                     
+        }
+
+
+        ///////////////////////////////////////////////////////////
+        // // // // // // // // // // // // // // // // // // // // 
+        // // // //                         // // // // // // // // 
+        // // // //        the new main….   // // // // // // // // 
+
+        var initial_setup = function(){
+
+            console.log("\n>>> initial_setup() \n" );
+
+            // basic html things 
+            select_div_elements();
+
+            // object oriented version 
+            select_V2pt0__div_thigns();
+
+            //
+            // load_new_time_data();
+
+            // parse_data_into_something_d3_friendly();
+
+            // V2 : look up the positions of various things … 
+            lookup_relevant_timeslider_distances_on_startup()
+
+            // and then the things on window resize, just once… 
+            lookup_relevant_timeslider_distances_on_window_resize();
+
+
+
+            // make sure the map markers updates on map change 
+            //// bind_event_listeners_for_map_update_on_map_pan_zoom_change();
+            //// update_d3_layer__NEW_NEW()
+
+            // - control time and update time with mouse movement
+            //// bind_mouseove_listener__for_interactive_interactions();   
+
+
+
+            // V2 : bind event listeners and handlers for intractive events 
+            bind_event_listeners_for_interactive_events();
+
+            // and bind event listeners for the calendar 
+            bind_event_listeners_to_calendar_matters();
+
+
+
+            // // // // update visuals 
+
+            // TEST TEST specify the time slider locaiton as a decimal 
+            current_timeslider_position_on_bar_as_decimal = 0.0;
+
+            // set the time slider to the relevant position - visually            
+            set_timeslide_current_position_market_to_current_position_in_data();
+
+        }
+
+
+
+        ////// part 2 
+
+        var test_new__PART_TWO = function(){
+
+            console.log("\n>>> test_new__PART_TWO() \n" );
+
+
+
+            // and then the more object oriented version
+            parse_loaded_data_into_something_visualisation_friendly( current_dateTime__as_YY_MM_DD_string );
+
+            // find all the timestamps
+            // make_all_timestamps();
+            make_all_timestamps__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+            // set markers 
+            // - update info at the top of the screen
+            set_visuals_according_to_days_data_refresh()
+
+            // set start and end times on screen
+            // set_start_and_end_time__on_screen__according_to_data();
+            //// set_start_and_end_time__on_screen__according_to_data__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+            // make sure the map markers updates on map change 
+            bind_event_listeners_for_map_update_on_map_pan_zoom_change();
+            update_d3_layer__NEW_NEW()
+
+            // - control time and update time with mouse movement
+            bind_mouseove_listener__for_interactive_interactions();
+
+            // draw the first frame! 
+            test_draw_from_time_data( 0 );
+
+        }
+
+
+
+        ////////////////////   TEST canvas drawing TEST  !   //////////////////
+        ////////////////////   TEST canvas drawing TEST  !   //////////////////
+
+
+        var onDrawLayer = function( info ){
+
+            console.log(">>>> onDrawLayer() ");
+            console.log("--- current current_day_data_index : "+current_day_data_index );
+
+            var starttime = new Date();
+
+            // -------- anfang !? ------ 
+
+
+            // --- make canvas 
+
+            var ctx = info.canvas.getContext( '2d' );
+            ctx.clearRect( 0, 0, info.canvas.width, info.canvas.height );
+
+
+            // --- get pixelszie at current zoom level
+            var pixel_size_given_zoom_level = ( 20** ( ( map.getZoom() - 2 )/10 ) )+2 ;
+
+            // --- standard fill colour? 
+            ctx.fillStyle = "rgb( 128, 128, 128 ) ";
+            ctx.globalAlpha =  0.75 ;
+
+
+            // ---- make loop & draw! 
+
+            // loop 
+            for( var sensor_i = 0; sensor_i < days_data_holder[ current_dateTime__as_YY_MM_DD_string ].lat_lon.length; sensor_i++ ){
+
+                // get pixel position… 
+                var dot_loc = info.layer._map.latLngToContainerPoint( days_data_holder[ current_dateTime__as_YY_MM_DD_string ].lat_lon[ sensor_i ] );
+
+                var curr_data_val = days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data__p1_values[ sensor_i ][ current_day_data_index ]
+
+                if ( curr_data_val === 0 ){
+                    continue;
+                }else{
+
+                    ctx.fillStyle = _colorScale( curr_data_val );
+                }
+
+                // debug printing … of data val and colour … 
+        /*                
+                if( sensor_i % 200 === 0 ){
+                    console.log("-- current sensor val = "+days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data__p1_values[ sensor_i ][ current_day_data_index ]+" - and col : "+curr_fill_col );
+                }                
+        */
+                // draw 
+                ctx.fillRect( dot_loc.x, dot_loc.y, pixel_size_given_zoom_level, pixel_size_given_zoom_level );
+
+            }
+
+            // -------- ende!? ------ 
+
+            console.log("---- so, that redraw too "+( new Date() - starttime )+" milliseconds ");
+
+        }
+
+
+
+
+
+        ////////////////////   STARTUP !   //////////////////
+        ////////////////////   STARTUP !   //////////////////
+        ////////////////////   STARTUP !   //////////////////
+        ////////////////////   STARTUP !   //////////////////
+
+
+        // make map 
+        // make map 
+        // make map 
+        // make map 
+
+
+
+        var map = L.map('map').setView([51.21909462044748, 10.328125], 6);
+        mapLink = 
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' /* 'http://{s}.sm.mapstack.stamen.com/(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/{z}/{x}/{y}.png'*/  /* 'https://maps.luftdaten.info/tiles/{z}/{x}/{y}.png' */ , {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+            } ).addTo(map);
+
+        // map._initPathRoot();
+
+        // add the d3 layer in the leaflet map… where the d3 content will be… 
+        // window.svg = d3.select("#map").select("svg");
+//        window.svg = L.svg();
+//        window.g = window.svg.append("g");
+        
+
+        // let's try adding a canvas layer! 
+        L.canvasLayer()
+            .delegate( this )
+            .addTo( map );
+
+        // IMPORTANT CANVAS MATTER! 
+        // get the id of the canvas layer … 
+        current_canvas_layer_id = Object.keys( map._layers )[1];
+
+
+
+
+
+        // // // // //  GO!  ---- the normal setup
+        initial_setup();
+
+        // TEST TEST TEST 
+        //// load some data : 
+        // check_if_date_available__and_load_and_setup_if_needed( new Date( 2019,3,27 ) );
+        var timestamp_now = new Date();
+        check_if_date_available__and_load_and_setup_if_needed( new Date( timestamp_now.getFullYear(), timestamp_now.getMonth(), timestamp_now.getDate() ) );
+
+
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

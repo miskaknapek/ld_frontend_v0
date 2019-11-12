@@ -1,0 +1,779 @@
+#map{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -100;
+}
+
+.leaflet-control{
+    top: 130px !important;
+}
+
+body{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color: rgb( 42, 46, 127 );
+}
+
+.hide_me__aka__display_none__class{
+    display: none;
+}
+
+#time_marker_box_outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;    
+    box-sizing: border-box;     
+    position: relative;
+    /* NOTE NOTE NOTE NOTE 
+
+    DISPLAY : NONE! 
+
+    NOTE NOTE NOTE */
+    display: none;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 5px;
+    border: 1px dashed orange;
+    background-color: rgba(255,255,255,0.75);
+    z-index: 500;
+    opacity: 0.1;
+}
+
+#time_marker_box_outer_outer:hover{
+    height: 50px;
+    opacity: 1;
+}
+
+#time_marker_box__central_element{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    float: left;
+    top: 5px;
+    left: 35%;
+    right: 35%;
+    width: 30%;
+    height: 20px;
+    border: 1px dashed orange;
+    text-align: center;
+}
+
+#time_marker_box__left_element{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    float: left;
+    top: 5px;
+    left: 10px;
+    width auto;
+    height: 20px;
+    opacity: 0.5;
+    border: 1px dashed orange;
+}
+
+#time_marker_box__right_element{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    float: left;
+    top: 5px;
+    right: 10px;
+    width: auto;
+    height: 20px;
+    opacity: 0.5;
+    border: 1px dashed orange;
+}
+
+
+/* leaflet matter */
+img.leaflet-tile{             
+    filter: grayscale(85%) saturate(150%) hue-rotate(60deg) contrast(90%) brightness(110%) !important;
+}
+
+/* -- svg tricks -- */
+
+circle{
+    /*mix-blend-mode: soft-light;*/
+}
+
+
+
+
+#interface{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 50px;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    /*background-color: rgba(255,255,255,0.25);*/
+}
+
+/* ----- date selection box ----- */
+
+#date_selection_box__outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100px;
+    height: 130px;
+    border: 1px solid rgb( 155, 199, 235 );
+    background-color: rgba(255,255,255,0.75);
+}
+
+#date_selection_box__year_and_month{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    float: left;
+    top: 1px;
+    left: 0px;
+    width: 100%;
+    height: none;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    text-align: center;
+    font-size: 12px;
+}
+
+
+#date_selection_box__current_day{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 19px;
+    left: 0px;
+    width: 100%;
+    height: none;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    text-align: center;
+    font-size: 32px;
+}
+
+#date_selection_box__day_selection__arrow_left{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 17px;
+    left: 0px;
+    width: 50px;
+    height: 50px;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    z-index: 90;
+    background-image: url( images/date_selection__LEFT_ARROW.svg );
+    background-position: -4% 0px;           
+    background-repeat: no-repeat ;  
+}
+
+#date_selection_box__day_selection__arrow_right{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 16px;
+    right: 0px;
+    width: 50px;
+    height: 50px;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    text-align: right;
+    z-index: 90;
+    background-image: url( images/date_selection__RIGHT_ARROW.svg );
+    background-position: 88% 0px;           
+    background-repeat: no-repeat ;      
+}
+
+#date_selection_box__day_selection__horizontal_backgound_line{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 17px;
+    left: 0px;
+    width: 200px;
+    height: 50px;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    text-align: center;
+}
+
+#date_selection_box__day_selection__calendarbox{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 50%;
+    left: 0px;
+    width: 100%;
+    height: 50%;
+    border: 1px dashed rgba( 128, 100, 64, 0.25 );
+    text-align: right;
+    z-index: 90;
+    background-image: url( images/date_selection__calendar_illustration.svg );
+    background-position: 48% 52%;           
+    background-repeat: no-repeat ;      
+}
+
+
+
+/* -------- big calendar ( hidden mstly ------ */
+
+#big_popup_calendar__outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    left: 0px;
+    top: 0px;    
+    width: 473px;
+    min-height: 100px;
+    border: 1px solid rgb( 155, 199, 235 );
+    background-color: rgba(255,255,255,0.95 );
+    z-index: 1000;
+}
+
+#big_popup_calendar__current_month_n_year__outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 10%;
+    /*border: 1px solid rgba( 155, 199, 235, 0.1 );*/
+    background-color: rgba(255,255,255,0.05);
+}
+
+#big_popup_calendar__current_month_n_year__curr_month_n_year_area__curr_month_n_year{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 0%;
+    width: 100%;
+    height: 40px;
+    /*border: 1px solid rgba( 155, 199, 235, 0.25 );*/
+    font-size: 32px;
+    line-height: 125%;
+    text-align: center;
+}
+
+#big_popup_calendar__current_month_n_year__curr_month_n_year_area__left_arrow{    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    width: 50%  ;
+    height: 60px;
+    background-image: url( images/date_selection__LEFT_ARROW.svg );
+    background-position: 60% -9px;           
+    background-repeat: no-repeat ;      
+}
+
+
+#big_popup_calendar__current_month_n_year__curr_month_n_year_area__right_arrow{    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    width: 50%;
+    height: 60px;
+    background-image: url( images/date_selection__RIGHT_ARROW.svg );
+    background-position: 40% -9px;           
+    background-repeat: no-repeat ;       
+}
+
+#big_popup_calendar__actual_calendar__outer{    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    margin-left: 37px;
+    margin-top: 27px;    
+    margin-bottom: 20px;
+    min-height: 100%;
+    /*border: 1px solid rgb( 155, 199, 235 );*/
+    /*background-color: rgba(255,255,255,0.75);*/
+}
+
+#big_popup_calendar__actual_calendar__blank_date{    
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgb( 155, 199, 235 );
+    background-color: rgba(255,255,255,0.75);
+}
+
+.date_individual{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display:inline-block;
+    position: relative;
+    float: left;
+    top: 0px;
+    left: 0px;
+    width: 55px;
+    height: 55px;
+/*    padding-top: 14%;*/
+    border: 1px solid rgba( 199, 199, 199, 0.3 );
+    background-color: rgba(255,255,255,0.9 );
+    font-size: 21px;
+    text-align: center;
+    line-height: 272%;
+    cursor: pointer;
+}
+
+.date_individual:hover{
+    background-color: rgba( 155, 199, 235,0.75);  
+}
+
+.big_popup_calendar__actual_calendar__blank_date{
+    color: rgba( 42, 46, 127, 0.5 );
+    background-color: rgba(255,255,255,0.15); 
+    border: 1px solid rgba( 155, 199, 235, 0.1 ); 
+}
+
+.big_popup_calendar__actual_calendar__actual_date{
+    background-color: rgba(255,255,255,0.75);    
+}
+
+.big_popup_calendar__actual_calendar__current_date{
+    color: white;
+    background-color: rgb( 42, 46, 127 );   
+}
+
+#big_popup_calendar__bottom_exit_button{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    float: left;
+    top: 0px;
+    right: 0px;
+    margin-top: 39px;  
+    margin-bottom: 20px;
+    width: 100%;
+    height: 50px;
+    /*background-color: rgba(255,255,255,0.75);*/
+    /*border: 1px solid rgba( 155, 199, 235, 0.5 ); */
+    background-image: url( images/big_calendar_close_box_icon.svg );
+    background-position: 95% 0px;       
+    background-size: auto;    
+    background-repeat: no-repeat ;        
+}
+
+
+
+/* ----- Time selection box ----- */
+
+#time_selection_box__outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    float: left;
+    top: 0px;
+    right: 0.5%;
+    width: calc( 99.5% - 110px );
+    height: 110px;
+    border: 1px solid rgb( 155, 199, 235 );
+    background-color: rgba(255,255,255,0.75);    
+}
+
+#time_selection_box__backgound{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 50px;
+    /*border: 2px dashed orange;*/
+    pointer-events: none;
+}
+
+#time_selection_box__transparent_for_click_foreground{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    /*border: 2px dashed orange;*/
+    /*pointer-events: none; */
+    /*background-color: rgba( 255,255,128,0.0 );*/
+}
+
+#time_selection_box__backgound__hours_listing_row{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 58px ;
+    width: calc( 100% - 116px );
+    height: 12px;
+    /*background-color: rgba( 42, 46, 127, 0.05 );*/
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.hour_listing_box{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 1px;
+    width: 20px;
+    height: 12px;
+    text-align: center;
+    background-border-bottom: 1px solid rgba( 42, 46, 127, 0.55 ); 
+    pointer-events: none;   
+}
+
+#time_selection_box__backgound__light_horizonal_line__back_edition{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 39px;
+    left: 0%;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid rgba( 42, 46, 127, 0.05 );
+    pointer-events: none;
+}
+
+#time_selection_box__backgound__light_horizonal_line__foreground_edition{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 39px;
+    left: calc( 100% - 20px );
+    width: calc( 100% - 40px );
+    height: 1px;
+    border-top: 1px solid rgba( 42, 46, 127, 0.25 );
+    pointer-events: none;
+}
+
+
+#date_selection_box__day_selection__block_showing_available_time_data{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 58px;
+    width: calc( 100% - 116px );
+    height: 111px;
+    background-color: rgba( 42, 46, 127, 0.10 );
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    pointer-events: none;
+}
+
+#date_selection_box__day_selection__block_showing_UNAVAILABLE_time_data{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 1px;
+    left: calc( 100% - 80px);
+    width: 21px;
+    height: 108px;
+    border: 2px solid rgba( 42, 46, 127, 0.10 );
+    background-color: rgba( 255, 255, 255, 0.5 );
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    pointer-events: none;
+}
+
+/* -- current time indication -- */
+
+#time_selection_box__current_time_indication__outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 5px;
+    width: 104px;
+    height: 100%px;
+    /*border: 1px solid rgb( 155, 199, 235 );*/
+    font-size: 32px;
+    font-weight: 600;
+    /*background-color: rgba(255,255,255,1.0);*/
+}
+
+#time_selection_box__current_time_indication__current_hour{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 18px;
+    right: 54px;
+    width: auto;
+    height: 100%;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+    text-align: right;
+}
+
+#time_selection_box__current_time_indication__vertical_line_in_middle{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 0px;
+    left: 52px;
+    width: 4px;
+    height: 116px;
+    background-color: rgb( 42, 46, 127  );
+}
+
+#time_selection_box__current_time_indication__current_minute{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    top: 18px;
+    left: 58px;
+    /*width: auto;*/
+    height: 100%;
+    /*border: 1px dashed rgba( 128, 100, 64, 0.25 );*/
+}
+
+
+/* ----- playback control boox ----- */
+
+#playback_control_box__outer_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute;
+    display: none;
+    top: 130px;
+    right: 0px;
+    width: 138px;
+    height: 69px;
+    border: 1px solid rgb( 155, 199, 235);
+    background-color: rgba(255,255,255,0.75);
+}
+
+#playback_control_box__left_double_arrows{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    height: 50px;
+    border: 1px dashed rgba( 128, 100, 64, 0.25 );
+}
+
+#playback_control_box__play_mode_button{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    height: 50px;
+    border: 1px dashed rgba( 128, 100, 64, 0.25 );
+}
+
+#playback_control_box__right_double_arrows{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    height: 50px;
+    border: 1px dashed rgba( 128, 100, 64, 0.25 );
+}
+
+
+
+/* ----- LOADING DATA! ----- */
+
+#loading_data_element__whole_screen_element{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.75);
+    z-index: 1200;
+}
+
+#loading_data_element__dialogue_box_outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    display: block;
+    top: 40%;
+    left: calc( 50% - 150px );
+    width: 300px;
+    min-height: 200px;
+    border: 1px dashed rgba( 128, 100, 64, 0.5 );
+    background-color: rgba(255,255,255,0.75);
+}
+
+#loading_data_element__dialogue_box_outer__loading_data_text{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: relative;
+    display: inline-block;
+    float: left;
+    top: 0px;
+    left: 0px;
+    padding: 20px;
+    padding-left: 25px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 75px;
+    font-size: 32px;
+}
+
+#loading_data_element__dialogue_box_outer__cancel_button_and_text{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute; 
+    display: inline-block;
+    float: right;
+    bottom: 0%;
+    right: 0px;
+    margin: 20px;
+    /*min-width: 20%;*/
+    min-height: 50px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px dashed rgba( 128, 100, 64, 0.5 );
+    color: red;
+    line-height: 175%;
+}
+
+#loading_data_element__dialogue_box_outer__cancel_button_and_text:hover{
+    background-color: rgba( 250, 200, 200, 0.5 );
+}
+
+
+/* ----- luftdaten attribution ---- */
+
+#luftdaten_attribution__link{
+
+}
+
+#luftdaten_attribution__outer{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute; 
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 400px;
+    height: 40px;
+}
+
+#luftdaten_attribution__text{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute; 
+    display: inline-block;
+    left: 0px;
+    top: 0px;
+    width: 200px;
+    height: 40px;
+    background-color: rgba( 255, 255, 255, 0.75 );
+    /*font-family: 'Open Sans', sans-serif;*/
+    font-weight: 200;       
+    text-align: right;
+    font-size: 16px;
+    color: rgb( 9, 102, 113) ;
+    line-height: 40px;
+}
+
+#luftdaten_attribution__luftdaten_logo{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    position: absolute; 
+    display: inline-block;
+    position: absolute; 
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 200px;
+    height: 40px;    
+    background-image: url( images/luftdaten_attribution_graphic.png );
+    background-position: 0px 0px;       
+    background-size: auto;    
+    background-repeat: no-repeat ;   
+}
+
+
+
+
+
+/* ----- debug window ---- */
+
+#debug_window{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;     
+    display: none;
+    position: absolute;
+    float: left;
+    left: 60px;
+    top: 141px;
+    padding: 10px;
+    min-width: 100px;
+    min-height: 68px;
+    border: 2px dashed rgba( 128, 100, 0, 0.25 );
+    background-color: rgba(255,255,255,1.0);
+    opacity: 0.5;
+    font-size: 16px;
+    z-index: 100;   
+}
