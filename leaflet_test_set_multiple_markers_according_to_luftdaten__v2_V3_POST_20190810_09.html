@@ -268,6 +268,11 @@
         var days_data_holder = { };
 
 
+        // --- data (V2)
+
+        var master_data_holding_obj = -1;
+
+
         // --- which is the current date
 
         var current_dateTime__as_Date_obj = new Date();
@@ -297,6 +302,17 @@
 
         // this array has rendering functions that are gone through in the onDrawLayer handler
         var renderers_array = [];
+
+        var renderers_array__index_of_renderer = 0 ; 
+        var renderers_array__index_of_renderer_METADATA = 1 ; 
+
+        // metadata for renderers; what data do they use 
+        var data_source__kind__particle_matter = "particle_matter";
+        var data_source__kind__humidity = "humidity";
+
+
+        // - semi-official - current main renderer as object 
+        var main_obj_PM_renderer_as_renderer_obj = -1;
 
 
         // --- colour scale 
@@ -757,7 +773,7 @@
             }
 
             // use the loading script; 
-            load_external_script( "js/ld_app__coordinate_grid_calculation_help_04.js", callback_ );
+            load_external_script( "js/ld_app__coordinate_grid_calculation_help_05.js", callback_ );
 
             // fin? … no, it's only ht
         }
@@ -1939,12 +1955,23 @@
         var add_renderers_to_the_renderers_array = function(){
             console.log(">>>> add_renderers_to_the_renderers_array() ");
 
-            // - add the main renderer 
-            renderers_array.push( main_layer__drawing_function );
+            /* - 'old' renderers
+                // - add the main renderer 
+                renderers_array.push( main_layer__drawing_function );
 
-            // - add the coords gen renderer
-            // renderers_array.push( calc_coords2.simple_drawing_function___coords_gen_obj );
-            renderers_array.push( calc_coords2.simple_drawing_function___coords_gen_obj__NEW );
+                // - add the coords gen renderer
+                // renderers_array.push( calc_coords2.simple_drawing_function___coords_gen_obj );
+                renderers_array.push( [ calc_coords2.simple_drawing_function___coords_gen_obj__NEW, "data_used" : data_source__kind__particle_matter ]);
+            */
+
+            // v2.0, for when we have the renderers as objects 
+
+            // add the PM rendering object 
+            renderers_array.push( main_obj_PM_renderer_as_renderer_obj );
+
+            // console.log("--- renderers_array.length = "+renderers_array.length );
+
+            // add the calc coords obj… 
         }
 
 
@@ -2278,6 +2305,15 @@
 
             console.log("\n>>> initial_setup() \n" );
 
+
+            // data holding v2.0 setup
+            data_holder_V2_setup( root_this );
+
+
+            // setup renderer objects 
+            make_main_PM_renderer_into_renderer_obj();
+
+
             // add renderers to the renderers array
             add_renderers_to_the_renderers_array();
 
@@ -2420,8 +2456,8 @@
 
             for( var curr_drawing_function_i = 0; curr_drawing_function_i < renderers_array.length; curr_drawing_function_i++ ){
 
-                var curr_drawing_function = renderers_array[ curr_drawing_function_i ];
-                curr_drawing_function(  ctx, root_this, 2, calc_coords2, info  )
+                var curr_drawing_function = renderers_array[ curr_drawing_function_i ].renderer;
+                curr_drawing_function(  ctx, root_this, 2, calc_coords2, info  );
             }
 
 /*
@@ -2465,6 +2501,349 @@
         }
 
 
+
+        ////////////////////   some objects  !   //////////////////
+        ////////////////////   some objects  !   //////////////////
+
+
+        ////////////////////   rendering object   !
+
+        var rendering_object_v0 = function( super_root ){
+
+            var super_root = super_root;
+
+            // --------- variables 
+
+            // --- are we active
+
+            this.are_we_active = false;
+
+            // --- what data sources are we using? 
+            this.data_sources_used = [];
+
+            // use the super root to get this… 
+            // … the info looks a bit like this … 
+            /* 
+                    // metadata for renderers; what data do they use 
+                    var data_source__kind__particle_matter = "particle_matter";
+                    var data_source__kind__humidity = "humidity";
+            */
+
+
+            // --------- methods 
+
+            this.renderer = -1;
+
+
+            this.turn_on_renderer = function(){
+
+                this.are_we_active = true;
+            }
+
+            this.turn_off_renderer = function(){
+
+                this.are_we_active = false;
+            }
+
+
+            this.print_status_of_this_renderer = function(){
+                console.log(">>>> print_status_of_this_renderer () ");
+
+                console.log("--- are we active?  : |"+this.are_we_active+"|" ) ;
+
+                console.log("--- data sources used : ");
+                console.log( this.data_sources_used )
+            }
+
+
+            // -------- instantiation? 
+
+        }
+
+
+        // ------ make the current main renderer a renderer object 
+
+        // make main renderer into a rendering obj… 
+        var make_main_PM_renderer_into_renderer_obj = function(){
+            console.log(">>>> make_main_PM_renderer_into_renderer_obj() ");
+
+            main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
+
+            main_obj_PM_renderer_as_renderer_obj.renderer = main_layer__drawing_function;
+
+            main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
+
+            main_obj_PM_renderer_as_renderer_obj.print_status_of_this_renderer();
+        }
+
+
+        // make adjustment layer renderer into rendering objet
+        var make_temp_Adjustment_Layer_renderer_into_renderer_obj = function(){
+            console.log(">>>> make_temp_Adjustment_Layer_renderer_into_renderer_obj() ");
+
+            main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
+
+            main_obj_PM_renderer_as_renderer_obj.renderer = calc_coords2.simple_drawing_function___coords_gen_obj;
+
+            main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
+
+            main_obj_PM_renderer_as_renderer_obj.print_status_of_this_renderer();
+        }
+
+
+        var make_renderer_objects__generally = function(){
+            console.log(">>>> make_renderer_objects__generally() ");
+
+            // make the main renderer into a rendering object 
+            make_main_PM_renderer_into_renderer_obj();
+
+            // and the same for the adjustment layer renderer 
+            make_temp_Adjustment_Layer_renderer_into_renderer_obj();
+
+        }
+
+
+
+
+        ////////////////////   data holding object   !
+
+        // -- General data holding object 
+        // - has different kinds of data (kind) ( objects ) … each with their 
+        //      own methods for handling data 
+
+        var data__master_data_holding_obj = function( root_this ){
+
+            // where's the super?
+            var root_this = root_this;
+
+            // ------- properties
+
+            // with a key for which data kind each object is.
+            this.individual_data_holding_objs = {};
+
+            // ------- methods 
+
+            // maybe this is in the data object… 
+            // this.check_if_data_is_avail = -1; 
+
+            // ------- startup            
+
+            console.log("\n ><>< data__master_data_holding_obj initialising … ");
+        }
+
+
+        var setup_master_data_holding_obj = function( root_this ){
+            console.log(">>>> setup_master_data_holding_obj() ");
+
+            master_data_holding_obj = new data__master_data_holding_obj( root_this );
+        }
+
+
+        // -- make data object for holding time series data of the PM or Humidity data kind 
+        //
+        var data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj = function( root_this ){
+            console.log(">>>> make_individual_data_holding_obj__for_master_data_holding_obj() ");
+
+            var root_this = root_this;
+
+            // ------- properties
+
+            // -- data kind 
+
+            // - identify the data here ; eg "humdity", "pm", etc… 
+            this.data_kind = "generic";
+
+            // -- data specifics 
+
+            // - temporarily this is the main setting for data resolutions
+            this.current_data_resolution_in_seconds = -1;
+            // NEEDED?
+            this.length_of_one_data_file = -1;
+
+            // -- data storage 
+
+            // data storage : 
+            // with a key for which resolution it's in… 
+            this.data = {};
+
+            // -- data fetching 
+
+            // this is the link to the root folder holding the data 
+
+            this.basic_root_url_for_data = -1;
+
+            // ------- methods 
+
+            // make space for a function to check whether data is available… 
+            this.check_if_data_is_avail = -1; 
+
+            // this loads relevant data 
+            this.fetch_load_data = -1;
+
+            // this parses the data into the relevant format 
+            this.parse_loaded_data = -1;
+
+            // ------- startup   
+
+            console.log("><>< done setup : make_individual_data_holding_obj__for_master_data_holding_obj ");
+        }
+
+
+        // modify specific data holder obj to become more of a PM / Humditiy data holding object 
+        // -- semi-generic time series data holding obj --> specific data holding obj for data like PM & humidity
+        var modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data = function( root_this, semi_generic_time_series_data_holder ){
+            consol.log(">>>> modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data() ");
+
+            // - add specific data available checking code 
+            semi_generic_time_series_data_holder.check_if_data_is_avail = function(){ console.log("-- REPLACE ME PLEASE! "); }
+
+            // - add specific etch load data code 
+            semi_generic_time_series_data_holder.fetch_load_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
+
+            // - add specific data parsing code 
+            semi_generic_time_series_data_holder.parse_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
+        }
+
+
+    /* - maybenot needed yet …
+        var setup_standard_data_resolutions_for_PM_and_humidity_time_series_data__given_object = function( root_this, given_object ){
+            console.log(">>>> setup_standard_data_resolutions_for_PM_and_humidity_time_series_data__given_object() ");
+
+        }
+    */
+
+
+        // make data holding object for time series data -> make specific PM data object --> install it
+        var data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it = function( root_this ){
+            console.log("data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it()");
+
+            // make and install object 
+            master_data_holding_obj['particle_matter'] = new data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj( root_this );
+
+            // modify it … to be a good PM data holding obj 
+            modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data( root_this, master_data_holding_obj['particle_matter'] );
+
+            // --- --- ---- 
+            // then add the final modifications, to make it a specific Particle matter holding obj
+            // - like specific urls, file patters, time intervals, data processing… 
+
+        /* 
+            ¿¿¿¿ NOTE: maybe this is more needed in the later OO version?  ??????
+                    - currently we don't have that many different visual entities requiring
+                      separate timings… 
+            // --- timing 
+
+            // curren date/time 
+            master_data_holding_obj['particle_matter'].current_dateTime__as_Date_obj = new Date();
+            master_data_holding_obj['particle_matter'].current_dateTime__as_YY_MM_DD_string = false;
+        */
+
+            // RELEVANT INSIDE A DATA OBJECT WITH A SPECIFIC SAMPLE TIME RESOLUTION 
+            master_data_holding_obj['particle_matter'].current_day_data_index = 0;
+        
+
+
+            // --- methods 
+            // how to process the data … 
+            master_data_holding_obj['particle_matter'].basic_root_url_for_data = function( root_this ){ console.log( "please add me…!"); } ;
+
+            // where to fetch data trom 
+            master_data_holding_obj['particle_matter'].basic_root_url_for_data = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+
+            // file name beginning 
+            master_data_holding_obj['particle_matter'].data_url__filename_beginning = "24_hrs_pm_data__starting_from__";
+
+            // file name suffix 
+            master_data_holding_obj['particle_matter'].data_url__filename_end = ".json";
+        }
+
+
+        // --- 
+        // inside the main_data_holder['specific_data_kind']['specific_resolution_in_seconds']…
+        //  put add a data__specific_time_resolution_data_holder object
+        var data__set_up_data_holding_entity_for_specific_time_data_resolution = function( root_this, curr_data_kind_root_data_holding_obj ){
+            console.log("\n >>>> data__set_up_data_holding_entity_for_specific_time_data_resolution() ");
+
+
+        }
+
+        // -- where to put the actual data. 
+        //      - object specific to a given time resolution 
+        var data__specific_time_resolution_data_holder = function( root_this, this_data_time_resolution ){
+
+            // ---- parameters
+
+            // --- actual data!
+            // ( indexed by dates… )
+            this.actual_data_at_given_time_resolution = -1;
+
+            // --- timing 
+
+            this.curr_time_resolution = this_data_time_resolution; // OR MAYBE JUST USE THE KEY TO THIS DATA…
+
+            // calculated 
+            this.time_stamps_for_this_data_at_given_resolution; 
+
+            //
+            this.number_of_sample_periods_in_a_day__CALCULATED = -1;
+
+            // --- current index in data 
+            //      - where the current time selection, showing on the map, 
+            //          is in the data 
+            this.current_day_data_index = -1;
+
+            // ---- methods 
+
+            // - find the number of samples that fit in one day's data, 
+            //      given the sample length 
+            this.find_number_of_samples_that_fit_into_one_day_given_this_data_resolution = function( root_this ){
+                console.log(">>>> find_number_of_samples_that_fit_into_one_day_given_this_data_resolution() ");
+
+            }
+
+            // - take the current time setting and find where this is in the array or data…
+            //      - typically for one day… 
+            this.find_current_day_data_index__given_main_interface_settings = function( root_this ){
+                console.log(">>>> find_current_day_data_index__given_main_interface_settings() ");
+            }
+
+            // - generate timestamps for data at a given day and time resolution… 
+            //      - do this for the day entries below here… as needed…
+            this.generate_timestamps_for_data_at_given_day_and_time_resolution = function( root_this ){
+                console.log( ">>>> generate_timestamps_for_data_at_given_day_and_time_resolution() ");
+            }
+
+            // ---- startup 
+
+        }
+
+
+
+        // object to hold actual data, for a given data sort, at a given time resolution, 
+        //  at a given time 
+        var data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time = function(){
+
+            this.actual_data_at_given_time = [];
+
+            this.timestamps_for_data = -1;            
+        }
+
+
+
+        // -------- data holder setup 
+        //      - this should run through the setup for data holder v2.0 things
+
+        var data_holder_V2_setup = function( root_this ){
+            console.log(">>>> data_holder_V2_setup() ");
+
+            // -- make the master object 
+            setup_master_data_holding_obj( root_this );
+
+
+            // -- make the PM data holding object in the master data holding obj 
+
+            // -- make the humidity data holding object in the master data holding obj 
+        }
 
 
 
