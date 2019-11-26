@@ -2606,6 +2606,8 @@
 
 
         ////////////////////   data holding object   !
+        ////////////////////   data holding object   !
+
 
         // -- General data holding object 
         // - has different kinds of data (kind) ( objects ) … each with their 
@@ -2632,6 +2634,8 @@
         }
 
 
+        //
+        // master data holder setup 
         var setup_master_data_holding_obj = function( root_this ){
             console.log(">>>> setup_master_data_holding_obj() ");
 
@@ -2639,7 +2643,7 @@
         }
 
 
-        // -- make data object for holding time series data of the PM or Humidity data kind 
+        // ---  data object for holding time series data of the PM or Humidity data kind 
         //
         var data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj = function( root_this ){
             console.log(">>>> make_individual_data_holding_obj__for_master_data_holding_obj() ");
@@ -2672,15 +2676,23 @@
 
             this.basic_root_url_for_data = -1;
 
+
             // ------- methods 
 
+            // --- or should these be further down in the hierarchy… ?! -> eg by time resolution… 
+
             // make space for a function to check whether data is available… 
-            this.check_if_data_is_avail = -1; 
+            // - edition for checking specific date. 
+            //              - ( there should be different such functions for checking date/time-spans )
+            // - INPUT : datetime and time resolution
+            this.check_if_specific_date_data_is_avail = -1; 
 
             // this loads relevant data 
+            // - make sure to be able to input datetime and time resolution … 
             this.fetch_load_data = -1;
 
             // this parses the data into the relevant format 
+            // - make sure input includes the time resolution and time/date … if needed
             this.parse_loaded_data = -1;
 
             // ------- startup   
@@ -2689,10 +2701,18 @@
         }
 
 
-        // modify specific data holder obj to become more of a PM / Humditiy data holding object 
-        // -- semi-generic time series data holding obj --> specific data holding obj for data like PM & humidity
+        // --- modify specific data holder obj to become more of a PM / Humditiy data holding object 
+        //      -  semi-generic time series data holding obj --> specific data holding obj for data like PM & humidity
         var modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data = function( root_this, semi_generic_time_series_data_holder ){
-            consol.log(">>>> modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data() ");
+            console.log(">>>> modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data() ");
+
+            // --- variables
+
+            // modificaiton - we store data at different resoluions … 
+            semi_generic_time_series_data_holder.data_at_different_time_resolutions = {};
+
+
+            // --- methods 
 
             // - add specific data available checking code 
             semi_generic_time_series_data_holder.check_if_data_is_avail = function(){ console.log("-- REPLACE ME PLEASE! "); }
@@ -2702,6 +2722,14 @@
 
             // - add specific data parsing code 
             semi_generic_time_series_data_holder.parse_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
+
+            // - make an object for holding the data at a specific time resolution
+            // ( within this, the data will be organised by dates )
+            semi_generic_time_series_data_holder.make_time_resolution_specific_data_holder = function( root_this, specific_time_resolution_in_seconds ){
+                console.log(">>>> make_time_resolution_specific_data_holder() - time resolution : "+specific_time_resolution_in_seconds );
+
+                semi_generic_time_series_data_holder.data_at_different_time_resolutions[ String( specific_time_resolution_in_seconds ) ] = new data__specific_time_resolution_data_holder( root_this, specific_time_resolution_in_seconds);
+            }
         }
 
 
@@ -2713,15 +2741,15 @@
     */
 
 
-        // make data holding object for time series data -> make specific PM data object --> install it
+        // --- make data holding object for time series data -> make specific PM data object --> install it
         var data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it = function( root_this ){
             console.log("data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it()");
 
             // make and install object 
-            master_data_holding_obj['particle_matter'] = new data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj( root_this );
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'] = new data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj( root_this );
 
             // modify it … to be a good PM data holding obj 
-            modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data( root_this, master_data_holding_obj['particle_matter'] );
+            modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data( root_this, master_data_holding_obj.individual_data_holding_objs['particle_matter'] );
 
             // --- --- ---- 
             // then add the final modifications, to make it a specific Particle matter holding obj
@@ -2734,38 +2762,40 @@
             // --- timing 
 
             // curren date/time 
-            master_data_holding_obj['particle_matter'].current_dateTime__as_Date_obj = new Date();
-            master_data_holding_obj['particle_matter'].current_dateTime__as_YY_MM_DD_string = false;
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].current_dateTime__as_Date_obj = new Date();
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].current_dateTime__as_YY_MM_DD_string = false;
         */
 
+            //
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_kind = root_this.data_source__kind__particle_matter;
+
             // RELEVANT INSIDE A DATA OBJECT WITH A SPECIFIC SAMPLE TIME RESOLUTION 
-            master_data_holding_obj['particle_matter'].current_day_data_index = 0;
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].current_day_data_index = 0;
         
+            // --- variables 
+            // where to fetch data trom 
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].basic_root_url_for_data = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+
+            // file name beginning 
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_url__filename_beginning = "24_hrs_pm_data__starting_from__";
+
+            // file name suffix 
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_url__filename_end = ".json";
 
 
             // --- methods 
-            // how to process the data … 
-            master_data_holding_obj['particle_matter'].basic_root_url_for_data = function( root_this ){ console.log( "please add me…!"); } ;
 
-            // where to fetch data trom 
-            master_data_holding_obj['particle_matter'].basic_root_url_for_data = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_datetime_specific_PM_data_holder__in_relevant_time_resolution = function( root_this, specific_time_resolution_in_seconds, relev_dateTime__as_YY_MM_DD_string ){
 
-            // file name beginning 
-            master_data_holding_obj['particle_matter'].data_url__filename_beginning = "24_hrs_pm_data__starting_from__";
+                console.log(">>>> make_datetime_specific_PM_data_holder__in_relevant_time_resolution() - time resolution : "+specific_time_resolution_in_seconds+" | datetime : "+relev_dateTime__as_YY_MM_DD_string );
 
-            // file name suffix 
-            master_data_holding_obj['particle_matter'].data_url__filename_end = ".json";
-        }
+                master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_at_different_time_resolutions[ String(specific_time_resolution_in_seconds) ].data__arranged_according_to_datetime[ relev_dateTime__as_YY_MM_DD_string ] = new data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time( root_this );
 
-
-        // --- 
-        // inside the main_data_holder['specific_data_kind']['specific_resolution_in_seconds']…
-        //  put add a data__specific_time_resolution_data_holder object
-        var data__set_up_data_holding_entity_for_specific_time_data_resolution = function( root_this, curr_data_kind_root_data_holding_obj ){
-            console.log("\n >>>> data__set_up_data_holding_entity_for_specific_time_data_resolution() ");
-
+                // console.log( master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_at_different_time_resolutions[ String(specific_time_resolution_in_seconds) ].data__arranged_according_to_datetime );
+            }
 
         }
+
 
         // -- where to put the actual data. 
         //      - object specific to a given time resolution 
@@ -2775,7 +2805,7 @@
 
             // --- actual data !
             // ( indexed by dates… )
-            this.actual_data_at_given_time_resolution = -1;
+            this.data__arranged_according_to_datetime = {};
 
             // --- timing 
 
@@ -2785,7 +2815,7 @@
             this.time_stamps_for_this_data_at_given_resolution; 
 
             //
-            this.number_of_sample_periods_in_a_day__CALCULATED = -1;
+            this.number_of_sample_periods_in_a_day__LOOKEDUP = -1;
 
             // --- current index in data 
             //      - where the current time selection, showing on the map, 
@@ -2807,6 +2837,11 @@
                 console.log(">>>> find_current_day_data_index__given_main_interface_settings() ");
             }
 
+            // helper to above 
+            this.set_current_day_data_index_to_zero = function( root_this ){
+                console.log(">>>> set_current_day_data_index_to_zero() ");
+            }
+
             // - generate timestamps for data at a given day and time resolution… 
             //      - do this for the day entries below here… as needed…
             this.generate_timestamps_for_data_at_given_day_and_time_resolution = function( root_this ){
@@ -2819,15 +2854,27 @@
 
 
 
+        // --- setup things for a specific time resolution 
+        // inside the main_data_holder['specific_data_kind']['specific_resolution_in_seconds']…
+        //  put add a data__specific_time_resolution_data_holder object
+        var data__set_up_data_holding_entity_for_specific_time_data_resolution = function( root_this, curr_data_kind_root_data_holding_obj, data_resolution_in_seconds ){
+            console.log("\n >>>> data__set_up_data_holding_entity_for_specific_time_data_resolution()  - setting up data holding element for time resolution of "+data_resolution_in_seconds );
+
+            // add data holder for specific time resolution 
+            curr_data_kind_root_data_holding_obj[ data_resolution_in_seconds ] = new data__specific_time_resolution_data_holder( root_this, data_resolution_in_seconds );
+        }
+
+
         // object to hold actual data, for a given data sort, at a given time resolution, 
         //  at a given time 
-        var data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time = function(){
+        var data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time = function( root_this ){
+
+            var root_this = root_this;
 
             this.actual_data_at_given_time = [];
 
-            this.timestamps_for_data = -1;            
+            this.timestamps_for_data = [];            
         }
-
 
 
         // -------- data holder setup 
@@ -2839,11 +2886,34 @@
             // -- make the master object 
             setup_master_data_holding_obj( root_this );
 
-
             // -- make the PM data holding object in the master data holding obj 
+            data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it( root_this );
 
+            // [ TEST ]
+            // [ TEST ]
+            // [ TEST ]
+
+            var test_time_resolution = 480;
+            // make holder for time resolution specific data 
+            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_time_resolution_specific_data_holder( root_this, test_time_resolution)
+            // make a data holding object, at a specfic datetime, in the 480s data resoluion time obj 
+            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_datetime_specific_PM_data_holder__in_relevant_time_resolution( root_this, test_time_resolution, "2019-11-26" );
+
+            // [ TEST ]
+            // [ TEST ]
+            // [ TEST ]
+
+
+
+            // [ LATER ]
+            // [ LATER ]
+            // [ LATER ]
             // -- make the humidity data holding object in the master data holding obj 
+            // [ LATER ]
+            // [ LATER ]
+            // [ LATER ]
         }
+
 
 
 
