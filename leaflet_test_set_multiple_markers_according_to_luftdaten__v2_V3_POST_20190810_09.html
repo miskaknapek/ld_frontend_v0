@@ -2514,6 +2514,8 @@
 
             // --------- variables 
 
+            this.renderer_self_description_txt = "untitled_renderer";
+
             // --- are we active
 
             this.are_we_active = false;
@@ -2571,6 +2573,10 @@
 
             main_obj_PM_renderer_as_renderer_obj.renderer = main_layer__drawing_function;
 
+            main_obj_PM_renderer_as_renderer_obj.renderer_self_description_txt = "main PM renderer";
+
+            main_obj_PM_renderer_as_renderer_obj.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
+
             main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
 
             main_obj_PM_renderer_as_renderer_obj.print_status_of_this_renderer();
@@ -2584,6 +2590,10 @@
             main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
 
             main_obj_PM_renderer_as_renderer_obj.renderer = calc_coords2.simple_drawing_function___coords_gen_obj;
+
+            main_obj_PM_renderer_as_renderer_obj.renderer_self_description_txt = "adjustment layer renderer somethings";
+
+            main_obj_PM_renderer_as_renderer_obj.data_sources_used = [ data_source__kind__humidity ];
 
             main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
 
@@ -2627,6 +2637,57 @@
 
             // maybe this is in the data object… 
             // this.check_if_data_is_avail = -1; 
+
+            this.data__check_n_load_relevant_data = function( root_this ){
+                console.log(">>>> data__check_n_load_relevant_data() ");
+
+                // --- check the renderers for which are active, and make a list of actively
+                //          used data sources
+
+
+                // --- ---- loop through relevan data sources to check (+load)
+                //              needed data … 
+
+            }
+
+
+            // --- find renderers used data sources
+
+
+            this.find_data_sources_used_by_active_renderers = function( root_this ){
+                console.log(">>>> find_data_sources_used_by_active_renderers() ");
+
+                // --- loop through :) 
+
+                this.data_sources_used_by_renderers = {};
+
+                for( var i = 0; i < root_this.renderers_array.length; i++ ){
+                    console.log("\t --- looping through renderer "+i+"/"+root_this.renderers_array.length+" - which should be the |"+root_this.renderers_array[i].renderer_self_description_txt+"| renderer, using the data sources : |"+root_this.renderers_array[i].data_sources_used+"| ( and is the renderer active? : |"+root_this.renderers_array[i].are_we_active+"|" );
+
+                    for( var curr_data_source_i_in_renderer = 0; curr_data_source_i_in_renderer < root_this.renderers_array[i].data_sources_used.length; curr_data_source_i_in_renderer++ ){
+
+                        // curr_data_source_i_in_renderer
+                        if( root_this.renderers_array[i].data_sources_used[ curr_data_source_i_in_renderer ] in this.data_sources_used_by_renderers ){
+
+                            // add one to the count
+                            this.data_sources_used_by_renderers[ root_this.renderers_array[i].data_sources_used[ curr_data_source_i_in_renderer ] ]["count"]++;
+                        }else{
+
+                            // create the entry for the given data source
+                            this.data_sources_used_by_renderers[ root_this.renderers_array[i].data_sources_used[ curr_data_source_i_in_renderer ] ] = { "count" : 1 };
+                        }
+                    }
+
+                }   
+
+                // feedback 
+                console.log("--- ok : got a data sources count a bit like this : ");
+                console.log( this.data_sources_used_by_renderers );
+
+                // fin 
+                return this.data_sources_used_by_renderers;
+            }
+
 
             // ------- startup            
 
