@@ -991,7 +991,7 @@
 
 
 
-        ////// set time slider position accordin go the decimal position of 
+        ////// set time slider position according to the decimal position of 
         //      where the time slider is supposed to be. 
 
         var set_timeslide_current_position_market_to_current_position_in_data = function(){
@@ -2706,6 +2706,8 @@
         var modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data = function( root_this, semi_generic_time_series_data_holder ){
             console.log(">>>> modify__individual_data_holding_obj__for_time_series_data__more_specifically_for_data_like_PM_and_humidity_data() ");
 
+
+
             // --- variables
 
             // modificaiton - we store data at different resoluions … 
@@ -2718,7 +2720,132 @@
             semi_generic_time_series_data_holder.check_if_data_is_avail = function(){ console.log("-- REPLACE ME PLEASE! "); }
 
             // - add specific etch load data code 
-            semi_generic_time_series_data_holder.fetch_load_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
+            semi_generic_time_series_data_holder.fetch_load_data = function( root_this, date_to_load__as_date_obj ){ 
+                console.log("-- fetch_load_data! - for date |"+date_to_load__as_date_obj+"|" ); 
+
+                // get the date in a format that can be used in the url 
+                relevant_day_as_YY_MM_DD_string = generate_date_as_year_month_day_string( days_date_to_load );
+
+                // get valid download url, for specific date/time and time resolution 
+                semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution( root_this, relevant_day_as_YY_MM_DD_string, specific_time_resolution_in_seconds );
+
+
+                // load + setup if needed 
+                fetch( relev_url )
+                    .then( function( response ){ 
+                                        console.log("--- fetching data : got data! ");
+                                        return response.json(); 
+                                    })
+                    .then( function( response_json ){
+                                        console.log("--- got parsed JSON : saving! ");
+                                        
+                                        // get the date as a YYYY-MM-DD string that cna 
+                                        // - be used as an array key
+                                        root_this.current_dateTime__as_YY_MM_DD_string = relevant_day_as_YY_MM_DD_string;
+
+                                        // NOTE NOTE NOTE NOTE 
+                                        // NOTE NOTE NOTE NOTE 
+                                        // NOTE NOTE NOTE NOTE 
+                                        //
+                                        // new code : SEE OLD CODE : 
+                                        //          ALSO RECONSIDER WHAT WE ACTUALLY NEED TO DO
+                                        //          - as we might need to load several files ( eg PM & humidity )
+                                        //
+                                        // NOTE NOTE NOTE NOTE 
+                                        // NOTE NOTE NOTE NOTE 
+                                        // NOTE NOTE NOTE NOTE               
+
+                                        // new code : Create date-time container for data
+
+
+                                        // new code : store response in said date-time container 
+
+
+
+                                        // new code : process data 
+
+
+
+                                        // new code : set various states given loaded data 
+                                        //              - eg. curr data index 
+
+
+
+                                        // new code : do things upon loading data… 
+
+
+                                /* - ORIGINAL VERSION CODE : 
+                                        // save data in the days array 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        days_data_holder[ current_dateTime__as_YY_MM_DD_string ] = response_json;
+
+                                        // do the traditional setup 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // // window.data2 = days_data_holder[ current_dateTime__as_YY_MM_DD_string ];
+
+                                        // setup 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+                                        // TEMPORARY TEMPORARY TEMPORARY 
+
+                                        // //
+                                        // test_new__PART_TWO();
+
+                            
+                                        // reset frame index 
+                                        current_data_index = 0;
+                                        // current_day_data_index = 0;
+                                        current_timeslider_position_on_bar_as_decimal = 0;
+
+                                        // and then the more object oriented version
+                                        parse_loaded_data_into_something_visualisation_friendly( current_dateTime__as_YY_MM_DD_string );
+
+                                        // calculate the number of time periods in the day's data
+                                        calculate_number_of_sample_periods_FOR_THE_WHOLE_DAY___in_current_days_data__WHETHER_OR_NOT_THE_WHOLE_DAYS_DATA_IS_THERE();
+
+                                        // find all the timestamps
+                                        // make_all_timestamps();
+                                        make_all_timestamps__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+                                        // set markers 
+                                        // - update info at the top of the screen
+                                        set_visuals_according_to_days_data_refresh()
+
+                                        // set start and end times on screen
+                                        // set_start_and_end_time__on_screen__according_to_data();
+                                        //// set_start_and_end_time__on_screen__according_to_data__OBJECT_ORIENTED_VERSION( current_dateTime__as_YY_MM_DD_string );
+
+                                        // only do this the first time 
+                                        // the data is loaded 
+
+                                        // make sure the map markers updates on map change 
+                                        bind_event_listeners_for_map_update_on_map_pan_zoom_change();
+                                        update_d3_layer__NEW_NEW()
+
+                                        // - control time and update time with mouse movement
+                                        if( allow_old_school_mouse_x_vs_screen_visualisation_interaction === 1 ){
+                                            bind_mouseove_listener__for_interactive_interactions();
+                                        }
+
+                                    
+                                        // remove loading screen 
+                                        hide_loading_screen();
+
+                                        // draw the first frame! 
+                                        test_draw_from_time_data( current_day_data_index );
+
+                            */                                    
+                        });
+
+
+
+            }
+
+
 
             // - add specific data parsing code 
             semi_generic_time_series_data_holder.parse_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
@@ -2730,6 +2857,19 @@
 
                 semi_generic_time_series_data_holder.data_at_different_time_resolutions[ String( specific_time_resolution_in_seconds ) ] = new data__specific_time_resolution_data_holder( root_this, specific_time_resolution_in_seconds);
             }
+
+
+            // - generate an url that can be used to fetch the data
+            semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution = function( root_this, relevant_day_as_YY_MM_DD_string, specific_time_resolution_in_seconds ){
+
+                console.log(">>>> generate_relevant_data_url_given_time_and_resolution() wih data |"+relevant_day_as_YY_MM_DD_string+"| and time resolution : |"+specific_time_resolution_in_seconds+"|" );
+
+                var final_filepath = semi_generic_time_series_data_holder.data_filepath__basic_url_start+"/"+semi_generic_time_series_data_holder.data_filepath__start_for_directory_name+String( specific_time_resolution_in_seconds )+semi_generic_time_series_data_holder.data_filepath__end_for_directory_name+"/"+semi_generic_time_series_data_holder.data_filepath__file_filename_start+relevant_day_as_YY_MM_DD_string+semi_generic_time_series_data_holder.data_filepath__file_filename_file_format_ending;
+
+                return final_filepath;
+            }
+
+
         }
 
 
@@ -2773,14 +2913,23 @@
             master_data_holding_obj.individual_data_holding_objs['particle_matter'].current_day_data_index = 0;
         
             // --- variables 
+
+            // - filename 
+            
+            // master_data_holding_obj.individual_data_holding_objs['particle_matter'].basic_root_url_for_data = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+
             // where to fetch data trom 
-            master_data_holding_obj.individual_data_holding_objs['particle_matter'].basic_root_url_for_data = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various/tabular_ld_data__480_s_intervals/";
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_filepath__basic_url_start = "http://sourisr.kapsi.fi/luftdaten/luftDaten_data_explorations/ld_daten_various";
+
+            // specific data resolution direcory 
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_filepath__start_for_directory_name = "tabular_ld_data__";
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_filepath__end_for_directory_name = "_s_intervals";
 
             // file name beginning 
-            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_url__filename_beginning = "24_hrs_pm_data__starting_from__";
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_filepath__file_filename_start = "24_hrs_pm_data__starting_from__";
 
             // file name suffix 
-            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_url__filename_end = ".json";
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_filepath__file_filename_file_format_ending = ".json";
 
 
             // --- methods 
