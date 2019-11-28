@@ -249,6 +249,8 @@
 
         // var data_sample_rates = [ "180", "240", "300", "360", "600", "900", "1800" ];
         var curr_data_time_interval = 480;
+        // NEW CODE ( 2019-11-28 ) - clearer name 
+        var curr_sample_length_in_s = 480;
 
         var base_urls_to_data__at_different_intervals = {};
 
@@ -2644,10 +2646,47 @@
                 // --- check the renderers for which are active, and make a list of actively
                 //          used data sources
 
+                this.data_sources_currently_used = this.find_data_sources_used_by_active_renderers( root_this );
 
                 // --- ---- loop through relevan data sources to check (+load)
-                //              needed data … 
+                //              needed data … if all data is there, go ahead and render the frame
+                this.is_all_data_present = false;
 
+                for( key in this.data_sources_currently_used ){
+
+                    console.log("\t currently checking whether data is available from data source |"+key+"|" );
+
+                    // check available data 
+                    // ( if not present, a false is returned, and the data is loaded
+                    //      if it is not already loading )
+                    var is_curr_data_source_relevant_data_available = this.individual_data_holding_objs[ key ].check__is_relevant_data_for_frame_rendering_available( root_this, false );
+
+                    // change data is present variable if data is not present
+                    // - only one missing data is 'needed' for us to have to wait
+                    if( is_curr_data_source_relevant_data_available === false ){
+                        this.is_all_data_present = false;
+                    }
+
+                }
+
+                // - STAY OR GO? - render frame or wait for data?
+                //  - check if all relevant data is loaded :
+                //      YES : ok, go ahead and render the next frame.
+                //      NO  : stop. 
+                //              - The objects will call this function again when data is loaded
+                //                  and if all data is available then, then things 
+                //                  will proceed with the YES path above
+                //
+                if( is_curr_data_source_relevant_data_available === true ){
+
+                    console.log("--- YAY : GOT ALL NEEDED DATA : GO AHEAD DO POST-DATA-LOADING THINGS AND RENDER FRAME!!! ");
+                }else if( is_curr_data_source_relevant_data_available === false ){
+
+                    console.log("--- oh nooo.... RELEVANT DATA MISSING : wait until data is loaded … ");
+                }
+
+
+                // - the end… 
             }
 
 
@@ -2738,6 +2777,11 @@
             this.basic_root_url_for_data = -1;
 
 
+            // are we in fact loading data? 
+            //      - good to check so we don't try loading data while it's already being loaded 
+            this.are_we_loading_data = false;
+
+
             // ------- methods 
 
             // --- or should these be further down in the hierarchy… ?! -> eg by time resolution… 
@@ -2747,6 +2791,9 @@
             //              - ( there should be different such functions for checking date/time-spans )
             // - INPUT : datetime and time resolution
             this.check_if_specific_date_data_is_avail = -1; 
+
+            // ALTERNATIVE DATA CHECKING CODE
+            this.check__is_relevant_data_for_frame_rendering_available = -1;
 
             // this loads relevant data 
             // - make sure to be able to input datetime and time resolution … 
@@ -2790,6 +2837,8 @@
                 // get valid download url, for specific date/time and time resolution 
                 semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution( root_this, relevant_day_as_YY_MM_DD_string, specific_time_resolution_in_seconds );
 
+                // new code : SET CURRENT DATA SOURCE AS LOADING DATA! 
+                semi_generic_time_series_data_holder.are_we_loading_data = true;
 
                 // load + setup if needed 
                 fetch( relev_url )
@@ -2827,8 +2876,15 @@
 
 
 
-                                        // new code : set various states given loaded data 
-                                        //              - eg. curr data index 
+                                        // new code : set the current data source as NOT loading any more 
+                                        semi_generic_time_series_data_holder.are_we_loading_data = false;
+                                        
+
+                                        // new code : run post-data-loading code ;)
+                                        //            run post-data-loading code ;)
+                                        //
+                                        //              - ie do different things depending on 
+                                        //              whether we're loading data due to date change or render change
 
 
 
@@ -2908,6 +2964,15 @@
 
 
 
+            //
+            semi_generic_time_series_data_holder.check__is_relevant_data_for_frame_rendering_available = function( root_this, placeholder_value_to_return ){
+                console.log("≥≥≥≥ is_relevant_data_for_frame_rendering_available() for data source ");
+
+                return placeholder_value_to_return;
+            }
+
+
+
             // - add specific data parsing code 
             semi_generic_time_series_data_holder.parse_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
 
@@ -2918,6 +2983,8 @@
 
                 semi_generic_time_series_data_holder.data_at_different_time_resolutions[ String( specific_time_resolution_in_seconds ) ] = new data__specific_time_resolution_data_holder( root_this, specific_time_resolution_in_seconds);
             }
+
+
 
 
             // - generate an url that can be used to fetch the data
@@ -3103,11 +3170,11 @@
             // [ TEST ]
             // [ TEST ]
 
-            var test_time_resolution = 480;
+            // var test_time_resolution = 480;
             // make holder for time resolution specific data 
-            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_time_resolution_specific_data_holder( root_this, test_time_resolution)
+            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_time_resolution_specific_data_holder( root_this, root_this.curr_sample_length_in_s )
             // make a data holding object, at a specfic datetime, in the 480s data resoluion time obj 
-            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_datetime_specific_PM_data_holder__in_relevant_time_resolution( root_this, test_time_resolution, "2019-11-26" );
+            root_this.master_data_holding_obj.individual_data_holding_objs['particle_matter'].make_datetime_specific_PM_data_holder__in_relevant_time_resolution( root_this, root_this.curr_sample_length_in_s, "2019-11-26" );
 
             // [ TEST ]
             // [ TEST ]
