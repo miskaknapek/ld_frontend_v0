@@ -195,7 +195,7 @@
 
 
     <a id="luftdaten_attribution__link" href="http://luftdaten.info">
-        <div id="luftdaten_attribution__outer">
+]        <div id="luftdaten_attribution__outer">
             <div id="luftdaten_attribution__text">data & collaboration :</div>
             <div id="luftdaten_attribution__luftdaten_logo"></div>
         </div>
@@ -217,6 +217,7 @@
         //////////////////////// coordinates
 
         var positions = [];
+
 
         var markers = [];
 
@@ -315,6 +316,9 @@
 
         // - semi-official - current main renderer as object 
         var main_obj_PM_renderer_as_renderer_obj = -1;
+
+        // - 
+        var main_renderers_holder = -1;
 
 
         // --- colour scale 
@@ -2309,16 +2313,18 @@
 
 
             // data holding v2.0 setup
-            data_holder_V2_setup( root_this );
+            data_holder_V2_setup( this );
 
 
             // setup renderer objects 
-            make_main_PM_renderer_into_renderer_obj();
+            // make_main_PM_renderer_into_renderer_obj();
+            renderers__general_renderers_setup( this )
 
-
+            // NEEDED ?
+            // NEEDED ?
+            // NEEDED ?
             // add renderers to the renderers array
-            add_renderers_to_the_renderers_array();
-
+            // // add_renderers_to_the_renderers_array();
 
             // basic html things 
             select_div_elements();
@@ -2456,9 +2462,9 @@
 
             // -- loop through the drawing functions array aka renderers_array
 
-            for( var curr_drawing_function_i = 0; curr_drawing_function_i < renderers_array.length; curr_drawing_function_i++ ){
+            for( var curr_drawing_function_i = 0; curr_drawing_function_i < main_renderers_holder.renderers.length; curr_drawing_function_i++ ){
 
-                var curr_drawing_function = renderers_array[ curr_drawing_function_i ].renderer;
+                var curr_drawing_function = main_renderers_holder.renderers[ curr_drawing_function_i ].renderer;
                 curr_drawing_function(  ctx, root_this, 2, calc_coords2, info  );
             }
 
@@ -2525,6 +2531,9 @@
             // --- what data sources are we using? 
             this.data_sources_used = [];
 
+            // --- some parameters 
+            this.time_resolution_in_seconds = -1;
+
             // use the super root to get this… 
             // … the info looks a bit like this … 
             /* 
@@ -2565,25 +2574,62 @@
         }
 
 
+        // ------------ renderes
+
+        var main_renderers_holder = function( root_this ){
+
+            // - renderers list
+            this.renderers = [];
+
+
+            // ------- methods
+
+            // turn all renderers on/off
+        }
+
+
+        var make_main_renderers_holder_object = function( root_this ){
+            console.log(">>>> make_main_renderers_holder_object () ");
+
+            main_renderers_holder = new main_renderers_holder( root_this );
+        }
+
+
         // ------ make the current main renderer a renderer object 
 
         // make main renderer into a rendering obj… 
         var make_main_PM_renderer_into_renderer_obj = function(){
             console.log(">>>> make_main_PM_renderer_into_renderer_obj() ");
 
-            main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
+            var particle_matter_rendering_function = new rendering_object_v0( root_this );
 
-            main_obj_PM_renderer_as_renderer_obj.renderer = main_layer__drawing_function;
+            // main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
 
-            main_obj_PM_renderer_as_renderer_obj.renderer_self_description_txt = "main PM renderer";
+            particle_matter_rendering_function.renderer = main_layer__drawing_function;
 
-            main_obj_PM_renderer_as_renderer_obj.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
+            particle_matter_rendering_function.renderer_self_description_txt = "main PM renderer";
 
-            main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
+            particle_matter_rendering_function.time_resolution_in_seconds = 480;
 
-            main_obj_PM_renderer_as_renderer_obj.print_status_of_this_renderer();
+            particle_matter_rendering_function.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
+
+            particle_matter_rendering_function.turn_on_renderer();
+
+            particle_matter_rendering_function.print_status_of_this_renderer();
+
+            // add the renderer to the rendeers array
+            main_renderers_holder.renderers.push( particle_matter_rendering_function );
         }
 
+
+        // REMAKE! 
+        // REMAKE! 
+        // REMAKE! 
+        // REMAKE! 
+  
+        // NOTE NOTE NOTE : 
+        // NOTE NOTE NOTE :  NOT READY FOR PRIME TIME!
+        // NOTE NOTE NOTE : 
 
         // make adjustment layer renderer into rendering objet
         var make_temp_Adjustment_Layer_renderer_into_renderer_obj = function(){
@@ -2595,6 +2641,8 @@
 
             main_obj_PM_renderer_as_renderer_obj.renderer_self_description_txt = "adjustment layer renderer somethings";
 
+            main_obj_PM_renderer_as_renderer_obj.time_resolution_in_seconds = 3600;
+
             main_obj_PM_renderer_as_renderer_obj.data_sources_used = [ data_source__kind__humidity ];
 
             main_obj_PM_renderer_as_renderer_obj.turn_on_renderer();
@@ -2603,14 +2651,17 @@
         }
 
 
-        var make_renderer_objects__generally = function(){
-            console.log(">>>> make_renderer_objects__generally() ");
+        var renderers__general_renderers_setup = function( root_this ){
+            console.log(">>>> renderers__general_renderers_setup() ");
+
+            // main main rendeders holder 
+            make_main_renderers_holder_object( root_this );
 
             // make the main renderer into a rendering object 
             make_main_PM_renderer_into_renderer_obj();
 
             // and the same for the adjustment layer renderer 
-            make_temp_Adjustment_Layer_renderer_into_renderer_obj();
+            // // make_temp_Adjustment_Layer_renderer_into_renderer_obj();
 
         }
 
