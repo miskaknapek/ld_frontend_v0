@@ -301,6 +301,15 @@
 
         var current_calendar_temp_date = false;
 
+
+        // - what kind of data is needed for different rendering… 
+        //      - mostly used when communicating to data holders, what 
+        //          data needs to be loaded 
+        var data_temporality_needed__preset__single_day_data = "data_temporality_needed__preset__single_day_data";
+        // for when 
+        var data_temporality_needed__preset__timedate_period = "data_temporality_needed__preset__timedate_period";        
+
+
         // --- visuals
 
         // this array has rendering functions that are gone through in the onDrawLayer handler
@@ -762,7 +771,7 @@
 
         // -- initialise external objects
 
-        var initialise_external_objects__AND_THEN__continue_setup = function(){
+        var initialise_external_objects__AND_THEN__continue_setup = function( root_this ){
             console.log(">>>> initialise_external_objects()  ");
 
             var callback_ = function(){
@@ -775,7 +784,7 @@
                 calc_coords2.make_new_TEST_settings_n_data_obj__with_global_subdivision();
 
                 // CONTINUE THE INITIAL SETUP! 
-                initial_setup();
+                initial_setup( root_this );
             }
 
             // use the loading script; 
@@ -2307,18 +2316,18 @@
         // // // //                         // // // // // // // // 
         // // // //        the new main….   // // // // // // // // 
 
-        var initial_setup = function(){
+        var initial_setup = function( root_this ){
 
             console.log("\n>>> initial_setup() \n" );
 
 
             // data holding v2.0 setup
-            data_holder_V2_setup( this );
+            data_holder_V2_setup( root_this );
 
 
             // setup renderer objects 
             // make_main_PM_renderer_into_renderer_obj();
-            renderers__general_renderers_setup( this )
+            renderers__general_renderers_setup( root_this );
 
             // NEEDED ?
             // NEEDED ?
@@ -2569,14 +2578,59 @@
             }
 
 
+            // report the data that's needed to render the current frame
+
+            this.report_what_data_is_needed_for_current_frame_render = function(){ return 1; }
+
             // -------- instantiation? 
 
         }
 
 
+        // object describing the data needed to render the current frame(s)
+        var data__data_needed_to_render_frame = function( root_this ){
+
+            // data about the the data requested 
+            this.data_meta_data = {
+
+                data_kind : -1,
+
+                data_temporality_needed : -1,
+                /* for this, check these from the root level … 
+                        //
+                        var data_temporality_needed__preset__single_day_data = "data_temporality_needed__preset__single_day_data";
+                        // for when 
+                        var data_temporality_needed__preset__timedate_period = "data_temporality_needed__preset__timedate_period";        
+                */
+
+                time_resolution_in_seconds : -1,
+
+                // - for single time / date 
+                datetime_info__single_time_period_needed : -1,
+
+                // - for contimuous time periods 
+                datetime_info__continuous_time_period_needed : -1
+            }
+
+
+            // --- meta data 
+
+            // is it loading or loaded?
+            this.is_fetched = false; 
+            this.is_loading = false;
+
+            // when requested and fetched
+            this.time_of_request = -1;
+            this.time_of_receipt_and_processing = -1;
+        }
+
+
+
+
         // ------------ renderes
 
-        var main_renderers_holder = function( root_this ){
+
+        var main_renderers_holder__class = function( root_this ){
 
             // - renderers list
             this.renderers = [];
@@ -2584,14 +2638,32 @@
 
             // ------- methods
 
+            //  - get the meta-data, as to what data is needed, for the next frame renders
+            //      from the renderers.
+            //      - This meta-data is saved with the master data holder,
+            //      which checks / loads the needed data, and then possibly 
+            //      give the go-ahead for he next frame render 
+            this.data__get_meta_data_on_data_needed_for_frame_render__from_renderers = function( root_this ){
+                console.log(">>>> data__get_meta_data_on_data_needed_for_frame_render__from_renderers() ");
+
+                for( var curr_renderer_i = 0; curr_renderer_i < root_this.main_renderers_holder.renderers.length; curr_renderer_i++ ){
+
+                    // get each renderer to create the objects about what data is needed
+                    // to render the next frame… 
+                    root_this.main_renderers_holder.renderers[ curr_renderer_i ].report_what_data_is_needed_for_current_frame_render( root_this );
+                }
+            }
+
             // turn all renderers on/off
         }
+
+
 
 
         var make_main_renderers_holder_object = function( root_this ){
             console.log(">>>> make_main_renderers_holder_object () ");
 
-            main_renderers_holder = new main_renderers_holder( root_this );
+            root_this.main_renderers_holder = new main_renderers_holder__class( root_this );
         }
 
 
@@ -2601,24 +2673,50 @@
         var make_main_PM_renderer_into_renderer_obj = function(){
             console.log(">>>> make_main_PM_renderer_into_renderer_obj() ");
 
-            var particle_matter_rendering_function = new rendering_object_v0( root_this );
+            var particle_matter_rendering_object = new rendering_object_v0( root_this );
 
             // main_obj_PM_renderer_as_renderer_obj = new rendering_object_v0( root_this );
 
-            particle_matter_rendering_function.renderer = main_layer__drawing_function;
+            particle_matter_rendering_object.renderer = main_layer__drawing_function;
 
-            particle_matter_rendering_function.renderer_self_description_txt = "main PM renderer";
+            particle_matter_rendering_object.renderer_self_description_txt = "main PM renderer";
 
-            particle_matter_rendering_function.time_resolution_in_seconds = 480;
+            particle_matter_rendering_object.time_resolution_in_seconds = 480;
 
-            particle_matter_rendering_function.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
+            particle_matter_rendering_object.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
 
-            particle_matter_rendering_function.turn_on_renderer();
+            particle_matter_rendering_object.turn_on_renderer();
 
-            particle_matter_rendering_function.print_status_of_this_renderer();
+            particle_matter_rendering_object.print_status_of_this_renderer();
 
+            // - make a function that returns an objecct suggesting what data is needed to render the 
+            //      given frame(s)
+            particle_matter_rendering_object.report_what_data_is_needed_for_current_frame_render = function( root_this ){
+                console.log(">>>> report_what_data_is_needed_for_current_frame_render() ");
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
+
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+            }
+
+            // ------- the fin 
             // add the renderer to the rendeers array
-            main_renderers_holder.renderers.push( particle_matter_rendering_function );
+            main_renderers_holder.renderers.push( particle_matter_rendering_object );
         }
 
 
@@ -2686,6 +2784,11 @@
             // with a key for which data kind each object is.
             this.individual_data_holding_objs = {};
 
+            // - requested data objects 
+            //      - renderers generate these, 
+            //          to indicate what data is needed 
+            this.requested_data__info_objects = [];
+
             // ------- methods 
 
             // maybe this is in the data object… 
@@ -2743,7 +2846,8 @@
 
             // --- find renderers used data sources
 
-
+            // - MAAAYBE NOT NEEDED when putting the renderers in the 
+            //      main_renderers_holder object 
             this.find_data_sources_used_by_active_renderers = function( root_this ){
                 console.log(">>>> find_data_sources_used_by_active_renderers() ");
 
@@ -2785,12 +2889,13 @@
         }
 
 
+
         //
         // master data holder setup 
         var setup_master_data_holding_obj = function( root_this ){
             console.log(">>>> setup_master_data_holding_obj() ");
 
-            master_data_holding_obj = new data__master_data_holding_obj( root_this );
+            root_this.master_data_holding_obj = new data__master_data_holding_obj( root_this );
         }
 
 
@@ -3290,7 +3395,7 @@
 
 
         // // // // //  GO!  ---- the normal setup
-        initialise_external_objects__AND_THEN__continue_setup();
+        initialise_external_objects__AND_THEN__continue_setup( root_this );
         // initial_setup();
 
 
