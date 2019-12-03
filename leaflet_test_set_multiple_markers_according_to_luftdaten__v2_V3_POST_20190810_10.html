@@ -242,6 +242,14 @@
 
         // --- data / objects     
 
+        // - where the data mainly lives 
+        var master_data_holding_obj = -1; 
+
+        // - and this is where the renderers live 
+        var main_renderers_holder = -1;      
+
+
+
 
         // - data url formating
 
@@ -272,8 +280,6 @@
 
 
         // --- data (V2)
-
-        var master_data_holding_obj = -1;
 
 
         // --- which is the current date
@@ -326,8 +332,7 @@
         // - semi-official - current main renderer as object 
         var main_obj_PM_renderer_as_renderer_obj = -1;
 
-        // - 
-        var main_renderers_holder = -1;
+
 
 
         // --- colour scale 
@@ -2667,6 +2672,8 @@
         }
 
 
+
+
         // ------ make the current main renderer a renderer object 
 
         // make main renderer into a rendering obj… 
@@ -2714,10 +2721,120 @@
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
             }
 
-            // ------- the fin 
+
+            // set up some test objects for testing the de-duplication code in the daata holder 
+            particle_matter_rendering_object.setup_test_data_request_metadata_objects = function( root_this ){
+                console.log(">>>> setup_test_data_request_metadata_objects() ");
+
+                // -------- make some objects with the current day 
+
+
+
+
+                // --- same day date object 1 
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );                
+
+
+                // --- same day date object 2
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+
+
+
+                // -------- make some objects with different dates 
+
+
+
+                // -- different day object 1 
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "19_11_30";
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+
+
+
+                // -- different day object 2
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "19_12_01";
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj )
+
+            }
+
+
+
+            // ------- the fin ----- 
             // add the renderer to the rendeers array
             main_renderers_holder.renderers.push( particle_matter_rendering_object );
         }
+
+
+
+
+
+
+
 
 
         // REMAKE! 
@@ -2747,6 +2864,8 @@
 
             main_obj_PM_renderer_as_renderer_obj.print_status_of_this_renderer();
         }
+
+
 
 
         var renderers__general_renderers_setup = function( root_this ){
@@ -2844,9 +2963,144 @@
             }
 
 
+            // --- deduplicae the objects describing which data is needed ( to load )
+
+            /*
+
+                How to : 
+                    
+                    Try ONE : experimental 
+                        - Loop object by object [ original object ]
+                            - loop object by object  [ copmarison object ]
+                                - set variable to keep count of matching values 
+                                - loop key by key of original object and comparison object
+                                    - count matching values 
+                                - if all values match, then it's a maching object 
+                                - note the index of the object in an array marking dipliate objcts 
+
+                    Try TWO : repeat how to do it classically, with single value comparisons 
+                        - loop object by object
+                            - check if object is in array of original items
+                                - if yes : 
+                                        - just note how many times it's feature
+                                - if no : 
+                                        - add it as an entry of original items 
+
+
+                    Try THREE : cmobining original and new methods : 
+
+                        - simplified : compare objects
+                            - if match : 
+                                - maybe add a count of how many objects matched
+                                    - at least outside of the real objects
+                                - 
+                        - 
+            */
+
+            this.dedupliacte__data_objects_about_what_data_to_fetch = function( root_this ){
+                console.log(">>>> dedupliacte__data_objects_about_what_data_to_fetch() ");
+
+                // --- variables
+
+                var deduplicated_objects = [];
+
+                var original_objects_count = root_this.master_data_holding_obj.requested_data__info_objects.length;
+
+                // --- loop and deduplicate 
+
+                // - go original object by original object 
+
+                    // - go comparison object by comparison object 
+
+                        // - keep count of matching / total keys 
+
+                        // - go key by key of the keys in the timing into 
+
+                            // - compare keys 
+
+                        // - if all keys match : 
+                            // - continue 
+                        // - if no match : 
+                            // - add to array of unique entries 
+                            // - skip remaining items … ( break? )
+
+                // -- so let's do it :) 
+
+                // loop through the original object 
+                for( var original_obj_i = 0; original_obj_i < root_this.master_data_holding_obj.requested_data__info_objects.length; original_obj_i++ ){
+
+                    // loop through the other objects, for comparison 
+                    // - note that we're starting on the original object's index position + 1
+                    for( var comparison_obj_i = original_obj_i+1; comparison_obj_i < root_this.master_data_holding_obj.requested_data__info_objects.length; comparison_obj_i++ ){
+
+                        // keep track of matching values 
+                        var total_keys_found = 0;
+                        var total_matching_key_values = 0;
+
+                        // 
+                        for( key in root_this.master_data_holding_obj.requested_data__info_objects[ original_obj_i ].data_meta_data ){
+
+                            total_keys_found++;
+
+                            console.log("\t\t\t --- key comparison for key |"+key+"| for data request metadata objecs i/i "+original_obj_i+"/"+comparison_obj_i );
+
+                            // - do values comparison 
+                            if( root_this.master_data_holding_obj.requested_data__info_objects[ original_obj_i ].data_meta_data[ key ] ===  root_this.master_data_holding_obj.requested_data__info_objects[ comparison_obj_i ].data_meta_data[ key ]  ){
+
+                                console.log("\t\t\t\t - MATCH!" );
+
+                                total_matching_key_values++;
+
+                            }else{
+                                
+                                console.log("\t\t\t\t - NO NO NO NO match !" );                                
+
+                            }
+                        }
+
+
+                        // summarise values comparison 
+
+                        // if value matches count === found key count 
+                        //  - it's a similar object ! 
+                        //      - do nothing 
+                        if( total_keys_found === total_matching_key_values ){
+
+                            console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+comparison_obj_i+" -- MATCH ");
+
+                        }else{
+
+                            console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+comparison_obj_i+" -- NO NO NO match - adding object to array of original objects  ");
+
+                            deduplicated_objects.push( root_this.master_data_holding_obj.requested_data__info_objects[original_obj_i] );
+
+                            // else : it it's not a similar object : 
+                            //      - add it to the original objects array 
+                            //      - eg. >> deduplicated_objects << 
+                            //      - break 
+
+
+                        }
+                    }
+                }
+
+                // update the data holders array or data request objects 
+                // - eg replace it wih the original array made here 
+                root_this.master_data_holding_obj.requested_data__info_objects = deduplicated_objects;
+
+                // --- --- ---- the end 
+
+                console.log("||| end : found "+root_this.master_data_holding_obj.requested_data__info_objects.lenth+" original objects in "+original_objects_count );
+                //
+            }
+
+
             // --- find renderers used data sources
 
             // - MAAAYBE NOT NEEDED when putting the renderers in the 
+            // - MAAAYBE NOT NEEDED when putting the renderers in the 
+            // - MAAAYBE NOT NEEDED when putting the renderers in the 
+
             //      main_renderers_holder object 
             this.find_data_sources_used_by_active_renderers = function( root_this ){
                 console.log(">>>> find_data_sources_used_by_active_renderers() ");
