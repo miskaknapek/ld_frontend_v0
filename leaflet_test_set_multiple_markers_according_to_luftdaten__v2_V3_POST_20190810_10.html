@@ -246,7 +246,7 @@
         var master_data_holding_obj = -1; 
 
         // - and this is where the renderers live 
-        var main_renderers_holder = -1;      
+        var master_renderers_holder = -1;      
 
 
 
@@ -2476,9 +2476,9 @@
 
             // -- loop through the drawing functions array aka renderers_array
 
-            for( var curr_drawing_function_i = 0; curr_drawing_function_i < main_renderers_holder.renderers.length; curr_drawing_function_i++ ){
+            for( var curr_drawing_function_i = 0; curr_drawing_function_i < master_renderers_holder.renderers.length; curr_drawing_function_i++ ){
 
-                var curr_drawing_function = main_renderers_holder.renderers[ curr_drawing_function_i ].renderer;
+                var curr_drawing_function = master_renderers_holder.renderers[ curr_drawing_function_i ].renderer;
                 curr_drawing_function(  ctx, root_this, 2, calc_coords2, info  );
             }
 
@@ -2635,7 +2635,7 @@
         // ------------ renderes
 
 
-        var main_renderers_holder__class = function( root_this ){
+        var master_renderers_holder__class = function( root_this ){
 
             // - renderers list
             this.renderers = [];
@@ -2651,11 +2651,11 @@
             this.data__get_meta_data_on_data_needed_for_frame_render__from_renderers = function( root_this ){
                 console.log(">>>> data__get_meta_data_on_data_needed_for_frame_render__from_renderers() ");
 
-                for( var curr_renderer_i = 0; curr_renderer_i < root_this.main_renderers_holder.renderers.length; curr_renderer_i++ ){
+                for( var curr_renderer_i = 0; curr_renderer_i < root_this.master_renderers_holder.renderers.length; curr_renderer_i++ ){
 
                     // get each renderer to create the objects about what data is needed
                     // to render the next frame… 
-                    root_this.main_renderers_holder.renderers[ curr_renderer_i ].report_what_data_is_needed_for_current_frame_render( root_this );
+                    root_this.master_renderers_holder.renderers[ curr_renderer_i ].report_what_data_is_needed_for_current_frame_render( root_this );
                 }
             }
 
@@ -2665,10 +2665,10 @@
 
 
 
-        var make_main_renderers_holder_object = function( root_this ){
-            console.log(">>>> make_main_renderers_holder_object () ");
+        var make_master_renderers_holder_object = function( root_this ){
+            console.log(">>>> make_master_renderers_holder_object () ");
 
-            root_this.main_renderers_holder = new main_renderers_holder__class( root_this );
+            root_this.master_renderers_holder = new master_renderers_holder__class( root_this );
         }
 
 
@@ -2726,9 +2726,8 @@
             particle_matter_rendering_object.setup_test_data_request_metadata_objects = function( root_this ){
                 console.log(">>>> setup_test_data_request_metadata_objects() ");
 
+
                 // -------- make some objects with the current day 
-
-
 
 
                 // --- same day date object 1 
@@ -2775,8 +2774,7 @@
 
 
                 // -------- make some objects with different dates 
-
-
+                
 
                 // -- different day object 1 
 
@@ -2826,7 +2824,7 @@
 
             // ------- the fin ----- 
             // add the renderer to the rendeers array
-            main_renderers_holder.renderers.push( particle_matter_rendering_object );
+            master_renderers_holder.renderers.push( particle_matter_rendering_object );
         }
 
 
@@ -2872,7 +2870,7 @@
             console.log(">>>> renderers__general_renderers_setup() ");
 
             // main main rendeders holder 
-            make_main_renderers_holder_object( root_this );
+            make_master_renderers_holder_object( root_this );
 
             // make the main renderer into a rendering object 
             make_main_PM_renderer_into_renderer_obj();
@@ -2997,14 +2995,14 @@
                         - 
             */
 
-            this.dedupliacte__data_objects_about_what_data_to_fetch = function( root_this ){
+            this.dedupliacte__data_objects_about_what_data_to_fetch = function( root_this, master_data_holding_obj_this ){
                 console.log(">>>> dedupliacte__data_objects_about_what_data_to_fetch() ");
 
                 // --- variables
 
                 var deduplicated_objects = [];
 
-                var original_objects_count = root_this.master_data_holding_obj.requested_data__info_objects.length;
+                var original_objects_count = master_data_holding_obj_this.requested_data__info_objects.length;
 
                 // --- loop and deduplicate 
 
@@ -3027,25 +3025,25 @@
                 // -- so let's do it :) 
 
                 // loop through the original object 
-                for( var original_obj_i = 0; original_obj_i < root_this.master_data_holding_obj.requested_data__info_objects.length; original_obj_i++ ){
+                for( var original_obj_i = 0; original_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; original_obj_i++ ){
 
                     // loop through the other objects, for comparison 
                     // - note that we're starting on the original object's index position + 1
-                    for( var comparison_obj_i = original_obj_i+1; comparison_obj_i < root_this.master_data_holding_obj.requested_data__info_objects.length; comparison_obj_i++ ){
+                    for( var comparison_obj_i = original_obj_i+1; comparison_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; comparison_obj_i++ ){
 
                         // keep track of matching values 
                         var total_keys_found = 0;
                         var total_matching_key_values = 0;
 
                         // 
-                        for( key in root_this.master_data_holding_obj.requested_data__info_objects[ original_obj_i ].data_meta_data ){
+                        for( key in master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data ){
 
                             total_keys_found++;
 
                             console.log("\t\t\t --- key comparison for key |"+key+"| for data request metadata objecs i/i "+original_obj_i+"/"+comparison_obj_i );
 
                             // - do values comparison 
-                            if( root_this.master_data_holding_obj.requested_data__info_objects[ original_obj_i ].data_meta_data[ key ] ===  root_this.master_data_holding_obj.requested_data__info_objects[ comparison_obj_i ].data_meta_data[ key ]  ){
+                            if( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data[ key ] ===  master_data_holding_obj_this.requested_data__info_objects[ comparison_obj_i ].data_meta_data[ key ]  ){
 
                                 console.log("\t\t\t\t - MATCH!" );
 
@@ -3072,7 +3070,7 @@
 
                             console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+comparison_obj_i+" -- NO NO NO match - adding object to array of original objects  ");
 
-                            deduplicated_objects.push( root_this.master_data_holding_obj.requested_data__info_objects[original_obj_i] );
+                            deduplicated_objects.push( master_data_holding_obj_this.requested_data__info_objects[original_obj_i] );
 
                             // else : it it's not a similar object : 
                             //      - add it to the original objects array 
@@ -3086,11 +3084,11 @@
 
                 // update the data holders array or data request objects 
                 // - eg replace it wih the original array made here 
-                root_this.master_data_holding_obj.requested_data__info_objects = deduplicated_objects;
+                master_data_holding_obj_this.requested_data__info_objects = deduplicated_objects;
 
                 // --- --- ---- the end 
 
-                console.log("||| end : found "+root_this.master_data_holding_obj.requested_data__info_objects.lenth+" original objects in "+original_objects_count );
+                console.log("||| end : found "+master_data_holding_obj_this.requested_data__info_objects.lenth+" original objects in "+original_objects_count );
                 //
             }
 
@@ -3101,7 +3099,7 @@
             // - MAAAYBE NOT NEEDED when putting the renderers in the 
             // - MAAAYBE NOT NEEDED when putting the renderers in the 
 
-            //      main_renderers_holder object 
+            //      master_renderers_holder object 
             this.find_data_sources_used_by_active_renderers = function( root_this ){
                 console.log(">>>> find_data_sources_used_by_active_renderers() ");
 
