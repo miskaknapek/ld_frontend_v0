@@ -2995,7 +2995,107 @@
                         - 
             */
 
+
             this.dedupliacte__data_objects_about_what_data_to_fetch = function( root_this, master_data_holding_obj_this ){
+                console.log(">>>> dedupliacte__data_objects_about_what_data_to_fetch() ");
+
+                // --- variables
+
+                var deduplicated_objects = [];
+
+                var original_objects_count = master_data_holding_obj_this.requested_data__info_objects.length;
+
+                // --- loop and deduplicate 
+
+                // - go original object by original object 
+
+                    // - go comparison object by comparison object 
+
+                        // - keep count of matching / total keys 
+
+                        // - go key by key of the keys in the timing into 
+
+                            // - compare keys 
+
+                        // - if all keys match : 
+                            // - continue 
+                        // - if no match : 
+                            // - add to array of unique entries 
+                            // - skip remaining items … ( break? )
+
+                // -- so let's do it :) 
+
+                // loop through the original object 
+                for( var original_obj_i = 0; original_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; original_obj_i++ ){
+
+                    // loop through the other objects, for comparison 
+                    // - note that we're starting on the original object's index position + 1
+                    for( var deduplicated_array_obj_i = original_obj_i; deduplicated_array_obj_i < deduplicated_objects.length; deduplicated_array_obj_i++ ){
+
+                        // keep track of matching values 
+                        var total_keys_found = 0;
+                        var total_matching_key_values = 0;
+
+                        // 
+                        for( key in master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data ){
+
+                            total_keys_found++;
+
+                            console.log("\t\t\t --- key comparison for key |"+key+"| for data request metadata objecs i/i "+original_obj_i+"/"+deduplicated_array_obj_i );
+
+                            // - do values comparison 
+                            if( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data[ key ] ===  deduplicated_objects[ deduplicated_array_obj_i ].data_meta_data[ key ]  ){
+
+                                console.log("\t\t\t\t - MATCH!" );
+
+                                total_matching_key_values++;
+
+                            }else{
+                                
+                                console.log("\t\t\t\t - NO NO NO NO match !" );                                
+
+                            }
+                        }
+
+
+                        // summarise values comparison 
+
+                        // if value matches count === found key count 
+                        //  - it's a similar object ! 
+                        //      - do nothing 
+                        if( total_keys_found === total_matching_key_values ){
+
+                            console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+deduplicated_array_obj_i+" -- MATCH ");
+
+                        }else{
+
+                            console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+deduplicated_array_obj_i+" -- NO NO NO match - adding object to array of original objects  ");
+
+                            deduplicated_objects.push( master_data_holding_obj_this.requested_data__info_objects[original_obj_i] );
+
+                            // else : it it's not a similar object : 
+                            //      - add it to the original objects array 
+                            //      - eg. >> deduplicated_objects << 
+                            //      - break 
+
+
+                        }
+                    }
+                }
+
+                // update the data holders array or data request objects 
+                // - eg replace it wih the original array made here 
+                master_data_holding_obj_this.requested_data__info_objects = deduplicated_objects;
+
+                // --- --- ---- the end 
+
+                console.log("||| end : found "+master_data_holding_obj_this.requested_data__info_objects.length+" original objects in "+original_objects_count );
+                //
+            }
+
+
+
+            this.dedupliacte__data_objects_about_what_data_to_fetch__OLD_OLD_OLD = function( root_this, master_data_holding_obj_this ){
                 console.log(">>>> dedupliacte__data_objects_about_what_data_to_fetch() ");
 
                 // --- variables
@@ -3088,7 +3188,7 @@
 
                 // --- --- ---- the end 
 
-                console.log("||| end : found "+master_data_holding_obj_this.requested_data__info_objects.lenth+" original objects in "+original_objects_count );
+                console.log("||| end : found "+master_data_holding_obj_this.requested_data__info_objects.length+" original objects in "+original_objects_count );
                 //
             }
 
