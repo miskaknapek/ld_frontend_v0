@@ -2830,6 +2830,25 @@
 
 
 
+        var TEST_data_requested_meta_data_obj_creation_and_deduplication = function( root_this ){
+            console.log(">>>> TEST_data_requested_meta_data_obj_creation_and_deduplication() ");
+
+            // make objecst 
+            master_renderers_holder.renderers[ 0 ].setup_test_data_request_metadata_objects( root_this );            
+
+            console.log("--- just set up some data request objects - they're "+master_data_holding_obj.requested_data__info_objects.length );
+
+            // deduplicate 
+            master_data_holding_obj.deduplicate__data_objects_about_what_data_to_fetch( root_this, master_data_holding_obj );
+
+            console.log("\t --- master_data_holding_obj data request objects ( count : "+ master_data_holding_obj.requested_data__info_objects.length+") look like this : ");
+
+            console.log( master_data_holding_obj.requested_data__info_objects );
+
+            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication() : DONE ------- ");
+        }
+
+
 
 
 
@@ -2996,14 +3015,20 @@
             */
 
 
-            this.dedupliacte__data_objects_about_what_data_to_fetch = function( root_this, master_data_holding_obj_this ){
-                console.log(">>>> dedupliacte__data_objects_about_what_data_to_fetch() ");
+            this.deduplicate__data_objects_about_what_data_to_fetch = function( root_this, master_data_holding_obj_this ){
+                console.log(">>>> deduplicate__data_objects_about_what_data_to_fetch() ");
 
                 // --- variables
 
                 var deduplicated_objects = [];
 
                 var original_objects_count = master_data_holding_obj_this.requested_data__info_objects.length;
+
+                console.log("--- original object count : "+original_objects_count );
+
+
+                // add something to compare with, in the deduplicated array 
+                // deduplicated_objects.push(  master_data_holding_obj_this.requested_data__info_objects[0]  );
 
                 // --- loop and deduplicate 
 
@@ -3026,13 +3051,17 @@
                 // -- so let's do it :) 
 
                 // start from position 1, as we're adding the original 
-
+                //
                 // loop through the original object 
-                for( var original_obj_i = 1; original_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; original_obj_i++ ){
+                for( var original_obj_i = 0; original_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; original_obj_i++ ){
+
+                    // if a matching object is found, set this to true, and the curr object
+                    //      won't enter the deduplicated array 
+                    var curr_object_matches_an_object_in_deduplicated_array = false;
 
                     // loop through the other objects, for comparison 
                     // - note that we're starting on the original object's index position + 1
-                    for( var deduplicated_array_obj_i = original_obj_i; deduplicated_array_obj_i < deduplicated_objects.length; deduplicated_array_obj_i++ ){
+                    for( var deduplicated_array_obj_i = 0; deduplicated_array_obj_i < deduplicated_objects.length; deduplicated_array_obj_i++ ){
 
                         // keep track of matching values 
                         var total_keys_found = 0;
@@ -3069,21 +3098,31 @@
 
                             console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+deduplicated_array_obj_i+" -- MATCH ");
 
+                            curr_object_matches_an_object_in_deduplicated_array = true;
+
                         }else{
 
                             console.log("\t\t -- END of objects comparison i/i "+original_obj_i+"/"+deduplicated_array_obj_i+" -- NO NO NO match - adding object to array of original objects  ");
 
-                            deduplicated_objects.push( master_data_holding_obj_this.requested_data__info_objects[original_obj_i] );
+                            // deduplicated_objects.push( master_data_holding_obj_this.requested_data__info_objects[original_obj_i] );
 
                             // else : it it's not a similar object : 
                             //      - add it to the original objects array 
                             //      - eg. >> deduplicated_objects << 
                             //      - break 
 
-
+                            // curr_obj_matches_an_obj_in_deduplicated_array = false;
                         }
                     }
+
+                    // aha, the currenf original object doesnt' feature in the deduplicated array,
+                    //  - so it's an original, and should be there. 
+                    if( curr_object_matches_an_object_in_deduplicated_array === false ){
+                        deduplicated_objects.push( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ] );
+                    }
+
                 }
+
 
                 // update the data holders array or data request objects 
                 // - eg replace it wih the original array made here 
