@@ -1466,10 +1466,53 @@
 					- (next) Mini goals : 
 						- 
 
+	- Part FOUR : 2019-12-13
+
+		- DO : 
+			- work on check/load 
+
+				- CHECK / LOAD loop: 
+
+					- ready_to_proceed_to_render = true;
+					- for each data_request_meta_data_obj : 
+						- check if data exists. 
+							- if yes, return true
+							- if no,  return false
+								- it not loading : start loading daa
+								- set loading tag to true
+								- set ready_to_proceed_to_render = false;
+
+					- end of loop : if ready_to_proceed_to_render === true : 
+											- proceed to render frame
+									it ready_to_proceed_to_render === false : 
+											- do nothing. 
+												- data will be loaded and the the check/load function will be called again 
 
 
 
+		- QUESTION : 
 
+			- How to handle data loading? 
+				¿ - Does the data request metadata object handle it?
+							- it asks the relevant data holder to load the data. 
+							( - loading flag is set )
+								- the callback updates the loading flag 
+							\- summary : 
+										- the modularity is good here. 
+											- it means the data request renderer, making the data request objects,
+											 doesn't need to have the loading and parsing code for the data it requests.
+											 The particular data holder holding the data, has code to load and parse it. 
+				¿ - Does the data handler handle it, upon request from the data request object? 
+						- 
+
+				\-> one conclusion : 
+					- it's easier to track requests if the loading status info is in the data request meta-data obj .
+
+
+			- Design of data request object in regards to specific data holding objects : 
+					- data_request_metadata_obj : has a loading flag. 
+						- asks relevant data holder to check if data is present : 
+							- if yes : 
 
 
 
