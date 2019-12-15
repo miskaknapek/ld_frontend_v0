@@ -1515,6 +1515,22 @@
 							- if yes : 
 
 
+			- Pseudo code : in master data handler : 
+
+					- set variable checking if any data is missing : eg : 
+						do_we_have_all_data = true;
+					( only set this to false, not to true, when querying the data request objects for missing daat  )
+
+					- for each data request meta data object : 
+
+						- ask : is_necessary_data_in_place() ? 
+
+						- data request meta-data obj : 
+
+							- asks the relevant data holding object, whether the data is in place 
+
+								- relevant data loading object ( which is passed a reference to the data request metadata object ):
+
 
 
 
