@@ -1515,7 +1515,7 @@
 							- if yes : 
 
 
-			- Pseudo code : in master data handler : 
+			- PSEUDO CODE : in master data handler : 
 
 					- set variable checking if any data is missing : eg : 
 						do_we_have_all_data = true;
@@ -1529,8 +1529,36 @@
 
 							- asks the relevant data holding object, whether the data is in place 
 
-								- relevant data loading object ( which is passed a reference to the data request metadata object ):
+								- relevant data loading object ( which is passed a reference to the data request metadata object ):	
+									- checks 
+										- if no data : 
+											- sets data request meta data .loading flag to true 
+											- starts loading data 
+												- callback : 
+													- data processing / storing 
+													- call the check/load function again 
+											- returns false
+										- if yes data : 
+											- returns true
+											- sets data request meta data obj .is_fetched = true 
 
+					- at end of data request metadata object checking : 
+						- if is_any_data_missing === false : 
+							- don't do anything. wait for the callbacks loading data 
+						- else ( data is in place ) : 
+							- go ahead and render frame…! 
+
+
+
+			- NOTE : data arrangement : 
+				- master data holder : 
+					- different kinds of data : 
+						- time resolutions 
+							- timedata : 
+								\- data 
+
+
+			- 2019-12-16 : BUG IN CHECKING WHETHER RELEVANT TIME RESOLUTION IS PRESENT! 
 
 
 

@@ -1808,6 +1808,10 @@ var Calc_coords = function( input_ ){
 	}
 
 
+	// ___ rendering object …
+	
+
+
 	// ------------- time operations  --------------
 
 
