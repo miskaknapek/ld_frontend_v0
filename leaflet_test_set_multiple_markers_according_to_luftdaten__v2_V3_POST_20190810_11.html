@@ -2688,7 +2688,7 @@
 
             particle_matter_rendering_object.renderer_self_description_txt = "main PM renderer";
 
-            particle_matter_rendering_object.time_resolution_in_seconds = 960;
+            particle_matter_rendering_object.time_resolution_in_seconds = 480;
 
             particle_matter_rendering_object.data_sources_used = [ data_source__kind__particle_matter, data_source__kind__particle_matter ];
 
@@ -2774,6 +2774,25 @@
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
 
 
+                // --- same day date object 3 - BUT WITH DIFFERENT TIME RESOLUTION!
+
+                // make requested data info objec 
+                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame__metadata_obj( root_this );
+
+                // --- what kind of data do we need ( 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+
+                // - what kind of data do we need - likely a single day 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+
+                // - time period 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = 960;
+
+                // - day… 
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
+
+                // --- save to data holder 
+                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
 
                 // -------- make some objects with different dates 
                 
@@ -2921,6 +2940,11 @@
         // -- General data holding object 
         // - has different kinds of data (kind) ( objects ) … each with their 
         //      own methods for handling data 
+
+        // OLD OLD OLD ? 
+        // OLD OLD OLD ? 
+        // OLD OLD OLD ? 
+        // OLD OLD OLD ? 
 
         var data__master_data_holding_obj = function( root_this ){
 
@@ -3280,7 +3304,7 @@
                     console.log("\t\t --- got data kind of : |"+curr_relevant_data_kind+"|" );
 
                     // run the data checking, get true/false as to whether data is ready
-                    var is_this_data_ready__for_this_data_request_metadata_obj = master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ].check_if_data_is_avail__load_data_if_missing__callback_when_loaded( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ], master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ], master_data_holding_obj_this );
+                    var is_this_data_ready__for_this_data_request_metadata_obj = master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ].check_if_data_is_avail__load_data_if_missing__callback_when_loaded( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ], master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ], master_data_holding_obj_this, root_this );
 
                     // if ( any ) data is missing, then set the is-data-ready… to falses
                     if( is_this_data_ready__for_this_data_request_metadata_obj === false ){
@@ -3471,7 +3495,7 @@
 
 
              // - add specific data available checking code 
-            semi_generic_time_series_data_holder.check_if_data_is_avail__load_data_if_missing__callback_when_loaded = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, ){ 
+            semi_generic_time_series_data_holder.check_if_data_is_avail__load_data_if_missing__callback_when_loaded = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){ 
 
                 console.log("-- check_if_data_is_avail__load_data_if_missing__callback_when_loaded! "); 
                 console.log("\n - of data request metadata obj : ");
@@ -3495,42 +3519,51 @@
                     // check if the time resolution is present 
                     // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
                     // trying a different solution ( to avoid crashes )
-                    if( this_data_kind_holding_obj_this.data_at_different_time_resolutions.includes( curr_data_request_metadata_obj_time_resolution_as_string ) ){
+                    // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions.includes( curr_data_request_metadata_obj_time_resolution_as_string ) ){
+                    if( curr_data_request_metadata_obj_time_resolution_as_string in this_data_kind_holding_obj_this.data_at_different_time_resolutions ){
 
                         console.log("\t --- got the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");
 
                         is_relevant_time_resolution_present = true;
+
+                        // NOW DO THE CHECK IF THE TIME/DATE OBJECT IS PRESENT 
+                        // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.datetime_info__single_time_period_needed  ] ){
+                        if( data_request_metadata_obj_this.datetime_info__single_time_period_needed in this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
+
+                            console.log("\t\t --- aha - the data holder has the data object with the right timedae ( from the data request metadata object : ) |"+data_request_metadata_obj_this.data_meta_data.data_temporality_needed+"| ) ");
+
+                            is_relevant_timedate_obj_present = true;
+                        }else{
+
+                            console.log("\t\t --- OH NO : TIMEDATE object for requested data ( ) + is missing (commencing) LOADING DATA  ");
+
+                            // START LOADING 
+                            // START LOADING 
+                            // START LOADING 
+
+                            // START LOADING 
+                            // START LOADING 
+                            // START LOADING 
+
+                            // set the relevant meta-data flags 
+                            data_request_metadata_obj_this.is_loading = true;
+                            // set time of dispatch 
+                            data_request_metadata_obj_this.time_of_request = new Date();
+
+                            // - 
+                            this_data_kind_holding_obj_this.load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this );
+
+                        }
                     }else{
                         
                         console.log("\t --- MISSING : the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");                        
                         console.log("\t - DO WE BREAK ? ");
                         // BREAK?
+
+                        // SETUP TIME DATE HOLDER? 
+                        // - then make a request for the relevant object? 
                     }
-
-                    // check if the relevant timedate is present 
-                    if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.datetime_info__single_time_period_needed  ] ){
-
-                        console.log("\t\t --- aha - the data holder has the data object with the right timedae ( from the data request metadata object : ) |"+data_request_metadata_obj_this.data_meta_data.data_temporality_needed+"| ) ");
-
-                        is_relevant_timedate_obj_present = true;
-                    }else{
-
-                        console.log("\t\t --- OH NO : TIMEDATE object for requested data ( ) + is missing (commencing) LOADING DATA  ");
-
-                        // START LOADING 
-                        // START LOADING 
-                        // START LOADING 
-
-                        // START LOADING 
-                        // START LOADING 
-                        // START LOADING 
-
-                        // set the relevant meta-data flags 
-                        data_request_metadata_obj_this.is_loading = true;
-                        // set time of dispatch 
-                        data_request_metadata_obj_this.time_of_request = new Date();
-
-                    }
+                //
                 }else if( data_request_metadata_obj_this.is_loading === true ){
 
                     console.log("\t --- curr data obj data is LOADING ");
@@ -3801,6 +3834,43 @@
                 // console.log( master_data_holding_obj.individual_data_holding_objs['particle_matter'].data_at_different_time_resolutions[ String(specific_time_resolution_in_seconds) ].data__arranged_according_to_datetime );
             }
 
+            // --- LOAD DATA! 
+            //      -> includes making :
+            //              - filepath
+            //              - loading data ( make nice callback action too :) 
+            //              - parse data 
+            //              - make timedate object for storing data            
+            //              - store data in relevant timedate object
+
+            /* nice variable and function references … 
+
+                // get the date in a format that can be used in the url 
+                relevant_day_as_YY_MM_DD_string = generate_date_as_year_month_day_string( days_date_to_load );
+
+                // get valid download url, for specific date/time and time resolution 
+                semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution( root_this, relevant_day_as_YY_MM_DD_string, specific_time_resolution_in_seconds );
+                
+
+                // // - object for time-date specific data … 
+                ( stored at root level… os no worries about the specific location… )
+                data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time
+            */            
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){
+                console.log(">>>> load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj() ");
+
+                // ---  setup 
+
+                // get relevant file path 
+                semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.datetime_info__single_time_period_needed, data_request_metadata_obj_this.time_resolution_in_seconds );
+
+                // ---  load data 
+
+
+
+            }
+
+
+
         }
 
 
@@ -3886,6 +3956,8 @@
 
             this.timestamps_for_data = [];            
         }
+
+
 
 
         // -------- data holder setup 
