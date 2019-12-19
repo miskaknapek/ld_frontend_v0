@@ -3318,11 +3318,11 @@
 
                 if( all_needed_data_to_render_frame_is_present === true ){
 
-                    console.log("\n --- oho all_needed_data_to_render_frame_is_present ==== true - let's render a frame! ");
+                    console.log("\n ||||| oho all_needed_data_to_render_frame_is_present ==== true - let's render a frame! ");
 
                 }else if( all_needed_data_to_render_frame_is_present  === false ){
 
-                    console.log("\n --- oho all_needed_data_to_render_frame_is_present ==== false false - we need to wait :( ! ");
+                    console.log("\n ||||| oho all_needed_data_to_render_frame_is_present ==== FALSE > false - we need to wait DATA IS HOPEFULLY LOADING NOW, and we can expect a callback when the data is loaded… :( ! |||");
                 }
 
 
@@ -3858,10 +3858,14 @@
             master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){
                 console.log(">>>> load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj() ");
 
+                console.log("\t\t - data request metadata object looks like this : ");
+                console.log( data_request_metadata_obj_this );
+                console.log( data_request_metadata_obj_this.datetime_info__single_time_period_needed );
+
                 // ---  setup 
 
                 // get relevant file path 
-                semi_generic_time_series_data_holder.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.datetime_info__single_time_period_needed, data_request_metadata_obj_this.time_resolution_in_seconds );
+                relevant_file_path = this_data_kind_holding_obj_this.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.datetime_info__single_time_period_needed, data_request_metadata_obj_this.time_resolution_in_seconds );
 
                 // ---  load data 
 
