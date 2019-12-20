@@ -705,7 +705,7 @@
 
                 console.log("--- playing back time countr i "+window.counter );
 
-                test_draw_from_time_data( window.counter )
+                // test_draw_from_time_data( window.counter )
 
                 window.counter += advance_how_many_frames_per_frame_update;
 
@@ -2035,7 +2035,7 @@
                 ////// var dot_loc = info.layer._map.latLngToContainerPoint( days_data_holder[ current_dateTime__as_YY_MM_DD_string ].lat_lon[ sensor_i ] );
                 var dot_loc = info.layer._map.latLngToContainerPoint( days_data_holder[ current_dateTime__as_YY_MM_DD_string ].lat_lon[ sensor_i ] );
 
-                var curr_data_val = days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data__p1_values[ sensor_i ][ current_day_data_index ]
+                var curr_data_val = days_data_holder[ current_dateTime__as_YY_MM_DD_string ].data__p1_values[ sensor_i ][ current_day_data_index ]; 
 
                 if ( curr_data_val === 0 ){
                     continue;
@@ -2086,7 +2086,7 @@
                      console.log(" - current data index : "+current_data_index+" / "+window.num_of_data_values_per_sensor );
 
                      // now redraw
-                     test_draw_from_time_data( current_data_index );
+                     // test_draw_from_time_data( current_data_index );
 
                 }, false );
         }
@@ -2155,7 +2155,7 @@
                 update_d3_layer__NEW_NEW()
 
                 // finally draw 
-                test_draw_from_time_data( current_data_index );
+                // test_draw_from_time_data( current_data_index );
 
 
             }else{
@@ -2276,7 +2276,7 @@
                                     hide_loading_screen();
 
                                     // draw the first frame! 
-                                    test_draw_from_time_data( current_day_data_index );                                    
+                                    // test_draw_from_time_data( current_day_data_index );                                    
                     });
         }
 
@@ -2431,7 +2431,7 @@
             bind_mouseove_listener__for_interactive_interactions();
 
             // draw the first frame! 
-            test_draw_from_time_data( 0 );
+            // test_draw_from_time_data( 0 );
 
         }
 
@@ -3653,7 +3653,7 @@
                                         // new code : do things upon loading data… 
 
 
-                                /* - ORIGINAL VERSION CODE : 
+                                 // - ORIGINAL VERSION CODE : 
                                         // save data in the days array 
                                         // TEMPORARY TEMPORARY TEMPORARY 
                                         // TEMPORARY TEMPORARY TEMPORARY 
@@ -3715,9 +3715,9 @@
                                         hide_loading_screen();
 
                                         // draw the first frame! 
-                                        test_draw_from_time_data( current_day_data_index );
+                                        // test_draw_from_time_data( current_day_data_index );
 
-                            */                                    
+                                                                
                         });
 
             }
@@ -3860,12 +3860,12 @@
 
                 console.log("\t\t - data request metadata object looks like this : ");
                 console.log( data_request_metadata_obj_this );
-                console.log( data_request_metadata_obj_this.datetime_info__single_time_period_needed );
+                console.log( data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed );
 
                 // ---  setup 
 
                 // get relevant file path 
-                relevant_file_path = this_data_kind_holding_obj_this.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.datetime_info__single_time_period_needed, data_request_metadata_obj_this.time_resolution_in_seconds );
+                relevant_file_path = this_data_kind_holding_obj_this.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed, data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
 
                 // ---  load data 
 

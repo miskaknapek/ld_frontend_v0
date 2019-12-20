@@ -1562,6 +1562,33 @@
 
 
 
+			- 2019-12-20 : How to make a play button : 
+
+				> update_d3_layer__NEW_NEW:
+					- draws the map daa, based on :
+						-- current_day_data_index
+
+
+				> current_day_data_index
+				- Function to get current_day_data_index based on current slider position as decimal value ( current_timeslider_position_on_bar_as_decimal )
+					-- get_time_of_day_accoridng_to_curr_time_slider_decimal_position
+
+				> Decimal slider position  
+				- This variable is used in establishing the position of the time indicator 
+					-- current_timeslider_position_on_bar_as_decimal	
+				- Function used to go from decimal time marker position to time of day : 
+					-- get_time_of_day_accoridng_to_curr_time_slider_decimal_position
+
+				> get_time_of_day_accoridng_to_curr_time_slider_decimal_position
+					- uses : 
+						-- current_timeslider_position_on_bar_as_decimal
+				> update_time_slider_text_to_show_current_time_of_day() 
+
+				--- NOTES : 
+						- one would still need to figure out when the last day value would be. 
+							- get the UTC time and calculate decimal position? 
+
+
 
 
 
