@@ -1535,7 +1535,9 @@
 											- sets data request meta data .loading flag to true 
 											- starts loading data 
 												- callback : 
-													- data processing / storing 
+													- data processing;
+														- STORING PROPERLY, with the relevant formatting and setup!
+													- indicate in the meta-data object that the data is loaded! 
 													- call the check/load function again 
 											- returns false
 										- if yes data : 
@@ -1548,6 +1550,8 @@
 						- else ( data is in place ) : 
 							- go ahead and render frame…! 
 
+				- NOTE : relevant functions : 
+					- check_if_data_is_avail__load_data_if_missing__callback_when_loaded()
 
 
 			- NOTE : data arrangement : 
@@ -1568,7 +1572,6 @@
 					- draws the map daa, based on :
 						-- current_day_data_index
 
-
 				> current_day_data_index
 				- Function to get current_day_data_index based on current slider position as decimal value ( current_timeslider_position_on_bar_as_decimal )
 					-- get_time_of_day_accoridng_to_curr_time_slider_decimal_position
@@ -1587,6 +1590,12 @@
 				--- NOTES : 
 						- one would still need to figure out when the last day value would be. 
 							- get the UTC time and calculate decimal position? 
+
+						- play function would need to :
+							- do automatic increments of time ( do set time step too )
+							- stop at the end.
+							- update the interface on each step
+							- update the play/stop button … 
 
 
 

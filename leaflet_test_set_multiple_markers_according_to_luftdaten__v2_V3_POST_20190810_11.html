@@ -2622,7 +2622,10 @@
 
             // is it loading or loaded?
             this.check__is_relevant_data_for_frame_rendering_availabletched = false; 
+            this.check_if_data_is_avail__load_data_if_missing__callback_when_loaded = false;
+
             this.is_loading = false;
+            this.is_data_ready = false;
 
             // when requested and fetched
             this.time_of_request = -1;
@@ -2812,7 +2815,7 @@
                 data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
 
                 // - day… 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "19_11_30";
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "2019-11-30";
 
                 // --- save to data holder 
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
@@ -2834,7 +2837,7 @@
                 data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
 
                 // - day… 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "19_12_01";
+                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = "2019-12-1";
 
                 // --- save to data holder 
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj )
@@ -3293,7 +3296,7 @@
                 // loop through the original object 
                 for( var original_obj_i = 0; original_obj_i < master_data_holding_obj_this.requested_data__info_objects.length; original_obj_i++ ){
 
-                    console.log("\n\t - working on data request metadata object #"+original_obj_i+"/"+master_data_holding_obj_this.requested_data__info_objects.length+" --- got time resolution/date : "+master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data.time_resolution_in_seconds+" / "+master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data.datetime_info__single_time_period_needed  );
+                    console.log("\n ======= working on data request metadata object #"+original_obj_i+"/"+master_data_holding_obj_this.requested_data__info_objects.length+" --- got time resolution/date : "+master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data.time_resolution_in_seconds+" / "+master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ].data_meta_data.datetime_info__single_time_period_needed+" =========== "  );
 
                     // do the data availability checking ( and load if needed ) for the relevant 
                     // data holding obj 
@@ -3304,7 +3307,7 @@
                     console.log("\t\t --- got data kind of : |"+curr_relevant_data_kind+"|" );
 
                     // run the data checking, get true/false as to whether data is ready
-                    var is_this_data_ready__for_this_data_request_metadata_obj = master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ].check_if_data_is_avail__load_data_if_missing__callback_when_loaded( master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ], master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ], master_data_holding_obj_this, root_this );
+                    var is_this_data_ready__for_this_data_request_metadata_obj = master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ].check_if_data_is_avail__load_data_if_missing__callback_when_loaded( root_this, master_data_holding_obj_this.requested_data__info_objects[ original_obj_i ], master_data_holding_obj_this.individual_data_holding_objs[ curr_relevant_data_kind ], master_data_holding_obj_this, root_this );
 
                     // if ( any ) data is missing, then set the is-data-ready… to falses
                     if( is_this_data_ready__for_this_data_request_metadata_obj === false ){
@@ -3495,9 +3498,9 @@
 
 
              // - add specific data available checking code 
-            semi_generic_time_series_data_holder.check_if_data_is_avail__load_data_if_missing__callback_when_loaded = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){ 
+            semi_generic_time_series_data_holder.check_if_data_is_avail__load_data_if_missing__callback_when_loaded = function( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){ 
 
-                console.log("-- check_if_data_is_avail__load_data_if_missing__callback_when_loaded! "); 
+                console.log(">>>> check_if_data_is_avail__load_data_if_missing__callback_when_loaded! "); 
                 console.log("\n - of data request metadata obj : ");
                 console.log( data_request_metadata_obj_this );
 
@@ -3508,66 +3511,84 @@
 
                 // --- check if the data is in fact LOADING? 
                 //          - in which case we can skip the check/load below 
-                if( data_request_metadata_obj_this.is_loading === false ){
+                if( data_request_metadata_obj_this.is_data_ready === false ){
 
-                    // just a quick lookup
-                    var curr_data_request_metadata_obj_time_resolution_as_string = String( data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
+                    console.log("--- data_request_metadata_obj_this.is_data_ready === false ; we still need to fix the data for this data request object ");
+
+                    // --- check if the data is in fact LOADING? 
+                    //          - in which case we can skip the check/load below 
+                    if( data_request_metadata_obj_this.is_loading === false ){
+
+                        console.log("\t --- data_request_metadata_obj_this.is_loading === false ");
+
+                        // just a quick lookup
+                        var curr_data_request_metadata_obj_time_resolution_as_string = String( data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
 
 
-                    // --- check if time resolution and data is present 
+                        // --- check if time resolution and data is present 
 
-                    // check if the time resolution is present 
-                    // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
-                    // trying a different solution ( to avoid crashes )
-                    // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions.includes( curr_data_request_metadata_obj_time_resolution_as_string ) ){
-                    if( curr_data_request_metadata_obj_time_resolution_as_string in this_data_kind_holding_obj_this.data_at_different_time_resolutions ){
+                        // check if the time resolution is present 
+                        // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
+                        // trying a different solution ( to avoid crashes )
+                        // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions.includes( curr_data_request_metadata_obj_time_resolution_as_string ) ){
+                        if( curr_data_request_metadata_obj_time_resolution_as_string in this_data_kind_holding_obj_this.data_at_different_time_resolutions ){
 
-                        console.log("\t --- got the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");
+                            console.log("\t --- got the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");
 
-                        is_relevant_time_resolution_present = true;
+                            is_relevant_time_resolution_present = true;
 
-                        // NOW DO THE CHECK IF THE TIME/DATE OBJECT IS PRESENT 
-                        // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.datetime_info__single_time_period_needed  ] ){
-                        if( data_request_metadata_obj_this.datetime_info__single_time_period_needed in this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
+                            // NOW DO THE CHECK IF THE TIME/DATE OBJECT IS PRESENT 
+                            // if( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadafta_obj_this.datetime_info__single_time_period_needed  ] ){
+                            if( data_request_metadata_obj_this.datetime_info__single_time_period_needed in this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ] ){
 
-                            console.log("\t\t --- aha - the data holder has the data object with the right timedae ( from the data request metadata object : ) |"+data_request_metadata_obj_this.data_meta_data.data_temporality_needed+"| ) ");
+                                console.log("\t\t --- aha - the data holder has the data object with the right timedae ( from the data request metadata object : ) |"+data_request_metadata_obj_this.data_meta_data.data_temporality_needed+"| ) ");
 
-                            is_relevant_timedate_obj_present = true;
+                                is_relevant_timedate_obj_present = true;
+                            }else{
+
+                                console.log("\t\t --- OH NO : TIMEDATE object for requested data ( ) + is missing (commencing) LOADING DATA  ");
+
+                                // START LOADING 
+                                // START LOADING 
+                                // START LOADING 
+
+                                // START LOADING 
+                                // START LOADING 
+                                // START LOADING 
+
+                                // set the relevant meta-data flags 
+                                data_request_metadata_obj_this.is_loading = true;
+                                // set time of dispatch 
+                                data_request_metadata_obj_this.time_of_request = new Date();
+
+                                // - 
+                                this_data_kind_holding_obj_this.load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this );
+
+                            }
                         }else{
+                            
+                            console.log("\t --- MISSING : the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");                        
+                            console.log("\t - DO WE BREAK ? ");
+                            // BREAK?
 
-                            console.log("\t\t --- OH NO : TIMEDATE object for requested data ( ) + is missing (commencing) LOADING DATA  ");
-
-                            // START LOADING 
-                            // START LOADING 
-                            // START LOADING 
-
-                            // START LOADING 
-                            // START LOADING 
-                            // START LOADING 
-
-                            // set the relevant meta-data flags 
-                            data_request_metadata_obj_this.is_loading = true;
-                            // set time of dispatch 
-                            data_request_metadata_obj_this.time_of_request = new Date();
-
-                            // - 
-                            this_data_kind_holding_obj_this.load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this );
-
+                            // SETUP TIME DATE HOLDER? 
+                            // - then make a request for the relevant object? 
                         }
+                    //
+                    }else if( data_request_metadata_obj_this.is_loading === true ){
+
+                        console.log("\t --- curr data obj data is LOADING ");
+
                     }else{
-                        
-                        console.log("\t --- MISSING : the object for holding data in the right time resolution( |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"| ) ");                        
-                        console.log("\t - DO WE BREAK ? ");
-                        // BREAK?
 
-                        // SETUP TIME DATE HOLDER? 
-                        // - then make a request for the relevant object? 
+                        console.log("\t ---  data_request_metadata_obj_this.is_loading NOT FOUND! ");
                     }
-                //
-                }else if( data_request_metadata_obj_this.is_loading === true ){
 
-                    console.log("\t --- curr data obj data is LOADING ");
+                }else if( data_request_metadata_obj_this.is_data_ready === true ){
 
+                    console.log( "\t --- data_request_metadata_obj_this.is_data_ready === true - this info request object is DONE and loaded and parsed ");
+
+                    return true;
                 }
 
 
@@ -3855,7 +3876,7 @@
                 ( stored at root level… os no worries about the specific location… )
                 data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time
             */            
-            master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){
                 console.log(">>>> load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj() ");
 
                 console.log("\t\t - data request metadata object looks like this : ");
@@ -3865,10 +3886,29 @@
                 // ---  setup 
 
                 // get relevant file path 
-                relevant_file_path = this_data_kind_holding_obj_this.generate_relevant_data_url_given_time_and_resolution( data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed, data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
+                relevant_file_path = this_data_kind_holding_obj_this.generate_relevant_data_url_given_time_and_resolution( root_this, data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed, data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
+
+                console.log("\t\t\t - got url of : |"+relevant_file_path+"|");
 
                 // ---  load data 
+                fetch( relevant_file_path )
+                    .then( function( response ){ 
+                                        console.log("--- fetching data : got data! ");
+                                        return response.json(); 
+                                    })
+                    .then( function( response_json ){
+                                        console.log("--- got parsed JSON : saving! ");
+                                        console.log("\t --- for url |"+relevant_file_path+"|");
+                                        window.loaded_data = response_json;
 
+                                        // TEMP!
+                                        data_request_metadata_obj_this.is_loading = true;
+                                        data_request_metadata_obj_this.is_data_ready = true;
+                                        data_request_metadata_obj_this.time_of_receipt_and_processing = new Date();
+
+                                        console.log(" --- loading metadata request object looks like this : " );
+                                        console.log( data_request_metadata_obj_this );
+                                    });
 
 
             }
