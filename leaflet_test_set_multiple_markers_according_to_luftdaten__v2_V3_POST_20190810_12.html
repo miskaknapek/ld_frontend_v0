@@ -2776,7 +2776,7 @@
                 // --- save to data holder 
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
 
-
+        /*
                 // --- same day date object 3 - BUT WITH DIFFERENT TIME RESOLUTION!
 
                 // make requested data info objec 
@@ -2796,6 +2796,8 @@
 
                 // --- save to data holder 
                 root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+        */
+
 
                 // -------- make some objects with different dates 
                 
@@ -3289,6 +3291,7 @@
                 //      - if false, noting happens ( data is being loaded, and the check/load function will be called again )
                 //      - if still true, the frame is rendered
                 var all_needed_data_to_render_frame_is_present = true;
+                var data_request_metadata_objetcts_missing_data = 0;
 
 
                 // ---- loop to check data request objects for available data 
@@ -3312,6 +3315,7 @@
                     // if ( any ) data is missing, then set the is-data-ready… to falses
                     if( is_this_data_ready__for_this_data_request_metadata_obj === false ){
                         all_needed_data_to_render_frame_is_present = false;
+                        data_request_metadata_objetcts_missing_data++;
                     }
 
                 }
@@ -3321,11 +3325,12 @@
 
                 if( all_needed_data_to_render_frame_is_present === true ){
 
-                    console.log("\n ||||| oho all_needed_data_to_render_frame_is_present ==== true - let's render a frame! ");
+                    console.log("\n ||||| OHO ALL_NEEDED_DATA_TO_RENDER_FRAME_IS_PRESENT ==== TRUE - LET'S RENDER A FRAME! ||||| ");
 
                 }else if( all_needed_data_to_render_frame_is_present  === false ){
 
-                    console.log("\n ||||| oho all_needed_data_to_render_frame_is_present ==== FALSE > false - we need to wait DATA IS HOPEFULLY LOADING NOW, and we can expect a callback when the data is loaded… :( ! |||");
+                    console.log("\n ||||| oho all_needed_data_to_render_frame_is_present ==== FALSE > false - WE NEED TO WAIT --- DATA IS HOPEFULLY LOADING NOW, and we can expect a callback when the data is loaded… :( ! |||");
+                    console.log("|||||| data_request_metadata_objetcts_missing_data = "+data_request_metadata_objetcts_missing_data );
                 }
 
 
@@ -3906,16 +3911,19 @@
                                         // TEMP!
                                         data_request_metadata_obj_this.is_loading = true;
                                         data_request_metadata_obj_this.is_data_ready = true;
-                                        data_request_metadata_obj_this.time_of_receipt_and_processing = new Date();
+                                        data_request_metadata_obj_this.  = new Date();
 
                                         console.log(" --- loading metadata request object looks like this : " );
                                         console.log( data_request_metadata_obj_this );
+
+                                        // run another check if things are all loaded :) 
+                                        //  - let's see if we could do a render frame! 
+                                        console.log("|||| with data loaded, LET'S CHECK AGAIN IF ALL DATA IS IN PLACE :) calling >> check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame << ");
+                                        master_data_holding_obj.check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame( root_this, master_data_holding_obj );
+
                                     });
 
-
             }
-
-
 
         }
 

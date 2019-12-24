@@ -1552,6 +1552,7 @@
 
 				- NOTE : relevant functions : 
 					- check_if_data_is_avail__load_data_if_missing__callback_when_loaded()
+						- check_if_data_is_avail__load_data_if_missing__callback_when_loaded() 
 
 
 			- NOTE : data arrangement : 
@@ -1562,11 +1563,28 @@
 								\- data 
 
 
-			- 2019-12-16 : BUG IN CHECKING WHETHER RELEVANT TIME RESOLUTION IS PRESENT! 
+			- 2019-12-16 : - BUG IN CHECKING WHETHER RELEVANT TIME RESOLUTION IS PRESENT! 
+								- temporary fix
+
+			- 2019-12-24 :   MADE LOADING WORK IN PRINCIPLE : NEED TO FILL IN TEMPORARY BITS! 
+								- got the loading working, in principle, 
+								  WITHOUT data processing and storing .
+
+							- To do next : 
+								- detail what's missing, here
+								- detail above, in the plans, what needs to be done.
+
+								- What's missing : 
+									- Create new entity to hold data ( eg in master_data_holdr/kinds_of_data/relevant_data_kind/time_resolution/relevant_datetime )
+									- Process the data, as previously, and store it. 
+									( - try not store the data temporarily as windows.data_something )
+
+									- UPDATE RENDERER TO USE NEW DATA…
+									- MAKE HUMDIITY DATA …adaptation, for data and rendering
 
 
 
-			- 2019-12-20 : How to make a play button : 
+		-------- 2019-12-20 : HOW TO MAKE A PLAY BUTTON : 
 
 				> update_d3_layer__NEW_NEW:
 					- draws the map daa, based on :
@@ -1596,6 +1614,9 @@
 							- stop at the end.
 							- update the interface on each step
 							- update the play/stop button … 
+
+
+
 
 
 
