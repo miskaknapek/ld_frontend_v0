@@ -1583,6 +1583,34 @@
 									- MAKE HUMDIITY DATA …adaptation, for data and rendering
 
 
+							- To do next, part TWO : 
+								- detail current workings of handling incoming data : 
+										- main loading function : 
+											-- check_if_date_available__and_load_and_setup_if_needed() 
+											// note : the json response is made into the relevant data object .
+											//			ie no transformation of the incoming data : it's simply stored directly, according to its timedate 
+											//			code : 
+											//					days_data_holder[ current_dateTime__as_YY_MM_DD_string ] = response_json;
+											// note 2 : this would need to be updated for the new data holding structure
+										- subsequent functions : 						
+											-- parse_loaded_data_into_something_visualisation_friendly( current_dateTime__as_YY_MM_DD_string ) 				
+														//	- basically rearranges the incoming data into a format that requires fewer lookups 
+														//	- also sets the number of sensors 
+											-- calculate_number_of_sample_periods_FOR_THE_WHOLE_DAY___in_current_days_data__WHETHER_OR_NOT_THE_WHOLE_DAYS_DATA_IS_THERE() 
+														// 	- as the name suggests 
+											-- make_all_timestamps__OBJECT_ORIENTED_VERSION( relevant_day_as_YY_MM_DD_string ) 
+														// (later) NOTE : originally this function made OO timestamps for the current day AS A SYSTEM WIDE VARIABLE
+														//					EACH TIME A NEW DAY WAS LOADED. 
+														//					THIS TIME IT WOULD BE BETTER TO STORE THE TIMESTAMPS WITH THE DATA, 
+														//					and not generate them anew every time.
+														// note : the relevant_day_as_YY_MM_DD_string variable is used to find the data, where it's stored 
+														//		    this would need to be updated for the new data storage solution 
+											-- THEN BASIC SCREEN UPDATE THIGNS … 
+												-- set_visuals_according_to_days_data_refresh()
+												-- bind_event_listeners_for_map_update_on_map_pan_zoom_change()
+												-- hide_loading_screen()
+
+
 
 		-------- 2019-12-20 : HOW TO MAKE A PLAY BUTTON : 
 

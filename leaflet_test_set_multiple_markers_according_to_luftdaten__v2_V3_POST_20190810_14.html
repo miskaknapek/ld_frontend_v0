@@ -720,9 +720,9 @@
 
 
         // // parse loaded data 
-        var parse_loaded_data = function(){
+        var process_loaded_data = function(){
 
-            console.log("\n>>> parse_loaded_data() ");
+            console.log("\n>>> process_loaded_data() ");
 
         }
 
@@ -3467,7 +3467,7 @@
 
             // this parses the data into the relevant format 
             // - make sure input includes the time resolution and time/date … if needed
-            this.parse_loaded_data = -1;
+            this.process_loaded_data = -1;
 
             // ------- startup   
 
@@ -3570,7 +3570,7 @@
                                 data_request_metadata_obj_this.time_of_request = new Date();
 
                                 // - 
-                                this_data_kind_holding_obj_this.load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this );
+                                this_data_kind_holding_obj_this.load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj );
 
                             }
                         }else{
@@ -3763,7 +3763,7 @@
 
 
             // - add specific data parsing code 
-            semi_generic_time_series_data_holder.parse_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
+            semi_generic_time_series_data_holder.process_loaded_data = function(){ console.log("-- REPLACE ME PLEASE! "); }
 
 
             
@@ -3802,8 +3802,8 @@
 
 
         // --- make data holding object for time series data -> make specific PM data object --> install it
-        var data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it = function( root_this ){
-            console.log("data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it()");
+        var data__make_and_turn_time_sereis_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it = function( root_this ){
+            console.log("data__make_and_turn_time_sereis_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it()");
 
             // make and install object 
             master_data_holding_obj.individual_data_holding_objs['particle_matter'] = new data__individual_data_holding_obj__for_time_series_data__for_master_data_holding_obj( root_this );
@@ -3884,7 +3884,7 @@
                 ( stored at root level… os no worries about the specific location… )
                 data__holder_for_time_series_data_eg_PM_or_humidity_data__at_given_time
             */            
-            master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj, root_this ){
+            master_data_holding_obj.individual_data_holding_objs['particle_matter'].load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj = function( root_this, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj ){
                 console.log(">>>> load_pm_data__make_timedate_holder_for_data__set_datarequest_metadaa_obj__given_datarequest_metadata_obj() ");
 
                 console.log("\t\t - data request metadata object looks like this : ");
@@ -3909,13 +3909,17 @@
                                         console.log("\t --- for url |"+relevant_file_path+"|");
                                         window.loaded_data = response_json;
 
+                                        // process the data 
+                                        this_data_kind_holding_obj_this.process_loaded_data( root_this, response_json,data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj );
+
                                         // TEMP!
                                         // TEMP!
                                         // TEMP!
                                         data_request_metadata_obj_this.is_loading = true;
                                         data_request_metadata_obj_this.is_data_ready = true;
+                                        // timing things … 
                                         data_request_metadata_obj_this.time_of_receipt_and_processing = new Date();
-                                        data_request_metadata_obj_this.time_TOTAL_of_receipt_and_processing = data_request_metadata_obj_this.time_of_receipt_and_processing - data_request_metadata_obj_this.is_data_ready;
+                                        data_request_metadata_obj_this.time_TOTAL_of_receipt_and_processing = data_request_metadata_obj_this.time_of_receipt_and_processing - data_request_metadata_obj_this.time_of_request;
 
                                         console.log(" --- loading metadata request object looks like this : " );
                                         console.log( data_request_metadata_obj_this );
@@ -3929,7 +3933,18 @@
 
             }
 
+
+
+        master_data_holding_obj.individual_data_holding_objs['particle_matter'].process_loaded_data = function( root_this, response_json, data_request_metadata_obj_this, this_data_kind_holding_obj_this, master_data_holding_obj ){
+
+            console.log(">>>> process_loaded_data () ( part of Parficle Matter data holder ) ");
+            console.log("\t --- got data request object data of data kind |"+data_request_metadata_obj_this.data_meta_data.data_kind+"| date time : |"+data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed+"| and time resolution |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"|" );
+            //
+
         }
+
+
+    }
 
 
 
@@ -4028,7 +4043,7 @@
             setup_master_data_holding_obj( root_this );
 
             // -- make the PM data holding object in the master data holding obj 
-            data__make_and_turn_time_seris_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it( root_this );
+            data__make_and_turn_time_sereis_data_holding_obj__into__specific_PM_data_holding_obj__and_install_it( root_this );
 
             // [ TEST ]
             // [ TEST ]
