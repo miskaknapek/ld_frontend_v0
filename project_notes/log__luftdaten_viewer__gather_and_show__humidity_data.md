@@ -1611,6 +1611,44 @@
 												-- hide_loading_screen()
 
 
+								- Ideas of how to store data : 
+										¿ do we use the previous approach, or a more OO based new approach? 
+											- previously : 
+															- actual downloaded data was made into an object
+															- and then modified to suit our needs
+											- new OO based approach : 
+															- have object class 
+															- make object instance
+															- dump the data there
+															- use the methods in the object to process, shape and modify the data into the relevant shape and variables. 
+
+										! Reasons for a (new) OO approach :
+															- makes it more modular for different kinds of data. 
+															- keeps the methods with the data holding instance, rather than all over the place. 
+																( - the downside is that perhaps methods aren't reused… - eg with timestamp creation. how to fix? 
+																		- data holder ( eg Particle Matter data holding entity)
+																		 could modify the timedate individual data holding entity, using methods from everywhere, 
+																		 rather than having all the methods in the inividual timedate data holding entity. 
+																		 Having a standard object class for the timedate data holding entity could be a good thing
+																		 in terms of standardisation. 
+																		 The methods adding and processing data of/to it, could be elsewhere. 
+																		 …or could they be with the individual timedata data holding obj?
+																		 	\- ¿! how to reduce complexity? 
+																		 			- don't work on too many different levels ( eg apply things to the indivudal data obj, 
+																		 				rather than make one hop between different levels in the code, possibly causing this errors,
+																		 				to run code…  THEN AGAIN, either the processing code will be limited in level skipping, or the class code will be… ).
+																		 		-? What would be easier for debugging? 
+																		 			- when a method doesn't work too far away from itself… eg in too many different levels… 
+																		 				…so one doens't need to send paths too often… 
+																		 - IDEA : for the individual timedate object, pass the response_json and the data req metadata to it and 
+																		 			have a constructor that sets it up.
+																		 			--- ARGHHH: but what about that callback when it finished setting up? 
+																		 				- well, the individual timedate object can do that too… 
+																		 					… ie to run the check whether all data is ready and loaded… 
+																		 					( make a function in the data request object to set the data is loaded flags correctly…
+																		 					… with this being called when the individual timedate object had loaded the data … )
+
+
 
 		-------- 2019-12-20 : HOW TO MAKE A PLAY BUTTON : 
 
