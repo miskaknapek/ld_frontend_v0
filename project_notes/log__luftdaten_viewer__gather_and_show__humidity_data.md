@@ -1648,6 +1648,28 @@
 																		 					( make a function in the data request object to set the data is loaded flags correctly…
 																		 					… with this being called when the individual timedate object had loaded the data … )
 
+											- Building a OO data holder : 
+													- What did the old data holder look like? 
+														- check here : [days_data_holder]
+															- variables : 
+																- data_time_period_start
+																- data_time_period_end
+																- individual_data_sample_length_in_seconds
+																- num_of_sample_periods ( looked up I think  )
+																- sensor_ids
+																- lat_lon
+																- data__p1_values
+																- data__p2_values
+																- parsed_data
+
+													- NOTE : renderer uses the following element of the data : data__p1_values
+														- SO : no big need to parse the data! 
+														- the parsed_data data was aonly used for the d3 implementation, long ago… 
+
+													- SOLUTION: 
+														- just store the data 'as is' at the relevant timedate
+														- DO MAKE THE TIMESTAMPS!
+
 
 
 		-------- 2019-12-20 : HOW TO MAKE A PLAY BUTTON : 
