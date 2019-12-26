@@ -664,7 +664,7 @@
 
             console.log( "---- ok! done making "+window.num_of_data_values_per_sensor+" new dates. with start date of "+window.all_timestamps_in_data[0]+" and end date of "+window.all_timestamps_in_data[ window.all_timestamps_in_data.length-1 ] );
             console.log("\t ---- got times array of length "+window.all_timestamps_in_data.length  );
-        }        
+        }     
 
 
 
@@ -3466,6 +3466,44 @@
             // - make sure input includes the time resolution and time/date … if needed
             this.process_loaded_data = -1;
 
+
+            // - specific function to make timestamps for data objects like the initial 
+            //      PM ( and humidity ) data objects
+            this.make_all_timestamps__OBJECT_ORIENTED_VERSION___for_loaded_time_series_response_json_obj = function( loaded_response_json_object ){
+
+            console.log( ">>> (20191226) make_all_timestamps__OBJECT_ORIENTED_VERSION___for_loaded_time_series_response_json_obj() - ideally they should range from "+loaded_response_json_object.data_time_period_start+" - "+loaded_response_json_object.data_time_period_end );     
+
+                // console.log("\t --- loaded_response_json_object 2: ");
+                // console.log( loaded_response_json_object );
+
+                // // debug 
+                // console.log("--- num_of_sample_periods : "+loaded_response_json_object.num_of_sample_periods );
+
+                // make out object - it's one item shorter, as we've already got the start time in there
+                //// loaded_response_json_object.all_timestamps_in_data = [ start_time_as_date_obj ];            
+                loaded_response_json_object.all_timestamps_in_data = [ new Date( loaded_response_json_object.data_time_period_start ) ]; 
+
+                // make a date object for beginning with - a kind of time counter
+                //   that will be incremented in the loop
+                var start_time_as_date_obj = new Date( loaded_response_json_object.data_time_period_start );
+
+                // - decreasing the nunber of loops, as we've already done the first one above…
+                var relevant_num_of_time_periods = loaded_response_json_object.num_of_sample_periods-1;
+
+                // now loop!
+                for( var i = 0; i < relevant_num_of_time_periods; i++ ){                    
+
+                    var time_in_s = start_time_as_date_obj.setSeconds( start_time_as_date_obj.getSeconds() + loaded_response_json_object.individual_data_sample_length_in_seconds );
+
+                    loaded_response_json_object.all_timestamps_in_data.push( new Date( time_in_s )  );
+
+                    //console.log("\n \t\t - calculating time intervals, working on loop "+i+"/"+loaded_response_json_object.num_of_sample_periods+" with the timestamp looking like this : |"+(new Date( time_in_s ))+"|" );
+                }
+
+                console.log( "---- ok! done making "+loaded_response_json_object.num_of_data_values_per_sensor+" new dates. with start date of "+loaded_response_json_object.all_timestamps_in_data[0]+" and end date of "+loaded_response_json_object.all_timestamps_in_data[ loaded_response_json_object.all_timestamps_in_data.length-1 ] );
+                console.log("\t ---- got times array of length "+loaded_response_json_object.all_timestamps_in_data.length  );
+            }               
+
             // ------- startup   
 
             console.log("><>< done setup : make_individual_data_holding_obj__for_master_data_holding_obj ");
@@ -3902,7 +3940,7 @@
                                         return response.json(); 
                                     })
                     .then( function( response_json ){
-                                        console.log("--- got parsed JSON : saving! ");
+                                        console.log("--- got response_json : saving! ");
                                         console.log("\t --- for url |"+relevant_file_path+"|");
                                         window.loaded_data = response_json;
 
@@ -3921,13 +3959,13 @@
                                         console.log(" --- loading metadata request object looks like this : " );
                                         console.log( data_request_metadata_obj_this );
 
-                                        // run another check if things are all loaded :) 
+                                        // run another CHECK IF THINGS ARE ALL LOADED :) 
                                         //  - let's see if we could do a render frame! 
                                         console.log("|||| with data loaded, LET'S CHECK AGAIN IF ALL DATA IS IN PLACE :) calling >> check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame << ");
                                         master_data_holding_obj.check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame( root_this, master_data_holding_obj );
 
                                     });
-
+                //  
             }
 
 
@@ -3938,7 +3976,56 @@
             console.log("\t --- got data request object data of data kind |"+data_request_metadata_obj_this.data_meta_data.data_kind+"| date time : |"+data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed+"| and time resolution |"+data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds+"|" );
             //
 
+            // - save the data according to the path
+            //  - mostly the data is in the form it'll be used in, 
+            //      - except for the timestamps 
+
+
+            //// test to see what kind of a variable we have here : 
+            console.log("\t - this_data_kind_holding_obj_this : ");
+            console.log( this_data_kind_holding_obj_this );
+            console.log("\t - data_request_metadata_obj_this : ");
+            console.log( data_request_metadata_obj_this );
+
+
+            /// ---  store data ( finally ) 
+
+            var curr_data_request_metadata_obj_time_resolution_as_string = String( data_request_metadata_obj_this.data_meta_data.time_resolution_in_seconds );
+
+            // check the the time resolution holder is in this data 
+            if( curr_data_request_metadata_obj_time_resolution_as_string in this_data_kind_holding_obj_this.data_at_different_time_resolutions ){
+
+                console.log("\t ---- processing loaded data : relevant time resolution ( "+curr_data_request_metadata_obj_time_resolution_as_string+" ) is in relevant data holding obj!");
+
+            } // set up the relevant time resolution holder 
+            else{
+
+                console.log("\t ---- processing loaded data : relevant time resolution ( "+curr_data_request_metadata_obj_time_resolution_as_string+" ) is NOT NOT NOT NOT in relevant data holding obj! - MAKING IT NOW! ");
+
+                this_data_kind_holding_obj_this.make_time_resolution_specific_data_holder( root_this, curr_data_request_metadata_obj_time_resolution_as_string );
+            }
+
+
+            /// SAVE!  data into object( indexed by datetimestamp )
+            this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed ] = response_json;
+
+            console.log("\t --- (1) this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed ] : ");
+            console.log( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed ] );
+
+
+            // -- make timestamps ``
+            this_data_kind_holding_obj_this.make_all_timestamps__OBJECT_ORIENTED_VERSION___for_loaded_time_series_response_json_obj( this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed ] );
+
+            //// ---- finnisage 
+
+            // console.log("|||| DONE PROCESSING DATA OF response_json PM OBJECT AT RESOLUTION / TIME ( "+curr_data_request_metadata_obj_time_resolution_as_string+" / "+this_data_kind_holding_obj_this.data_at_different_time_resolutions[ curr_data_request_metadata_obj_time_resolution_as_string ][ data_request_metadata_obj_this.data_meta_data.datetime_info__single_time_period_needed].data_meta_data.datetime_info__single_time_period_needed+")" );
+
+            response_json = -1;
+
         }
+
+
+
 
 
     }
