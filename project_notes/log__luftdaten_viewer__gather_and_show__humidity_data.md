@@ -1668,7 +1668,105 @@
 
 													- SOLUTION: 
 														- just store the data 'as is' at the relevant timedate
-														- DO MAKE THE TIMESTAMPS!
+						
+
+					- 2019.12.27
+						 --- figure out the pathway from state change, to request for new data, to checking, loading, parsing and rendering 
+							- to-do : 
+									- path : 
+										- state change ( change in renderer or date change )
+													// MISSING MISSING MISSING 
+													// MISSING MISSING MISSING 
+													// MISSING MISSING MISSING 
+											-- central function ( in renderers or master data holder, or somewhere else ) : ask for needed data to render next frame
+												-- COULD IT BE THIS : 
+													-- master_renderers_holder__class / data__get_meta_data_on_data_needed_for_frame_render__from_renderers()
+														-- &&  each renderer has this function ( called by the above ) report_what_data_is_needed_for_current_frame_render()
+													// FIX
+													// FIX
+													// FIX
+											-- renderers should make data request metadata objects ( new root_this.data__data_needed_to_render_frame__metadata_obj … etc…  )
+													for the data they need : 
+													-- SEE ABOVE ( the function code is missing … )
+														-- I guess the eg PM renderer should eg check which time res, day is needed for the next frame, 
+															and make a data request metadata obj 
+
+														BUT BUT BUT …
+															- THE PM RENDERING OBJECT has this code . 
+																-- CHECK THE CODE 
+																	-- TRY RUNNING IT ( eg in test code! )
+																	-- AND/OR : try running it in the test code, and modifying the dates 
+																					( so you have more than just a single day of data to load )
+																					OR OR OR ( call the renderer to make new data request objects and change the dates
+																								in between the calls, and hopefully get new data request objects (current_data_index) )
+													// FIX
+													// FIX
+													// FIX
+
+											--- master data holder : check/load/process/render command 
+													- data request metadata objects are stored here : 
+															-- master_data_holding_obj.requested_data__info_objects
+													- deduplication of objects happens here : 
+															-- master_data_holding_obj.deduplicate__data_objects_about_what_data_to_fetch( root_this, master_data_holding_obj );
+													- check/load/go-and-render happens here : 
+															-- check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame() 
+															// MISSING MISSING MISSING 
+															// MISSING MISSING MISSING 
+															// MISSING MISSING MISSING 
+													-- render frame command … 
+															// MISSING MISSING MISSING 
+															// MISSING MISSING MISSING 
+															// MISSING MISSING MISSING 
+
+
+
+											-- 
+
+							NOTES : 
+
+								--- ¿¿¿ How do we keep track of current time ? 
+									-- there's the current_data_index variable. 
+											-- good for the day 
+										¿¿¿ how to track time of day? 
+											- day decimal value currently, according to the timeline … 
+											-- current_timeslider_position_on_bar_as_decimal
+
+											
+
+
+								--- test functions : 
+
+							        var TEST_data_requested_meta_data_obj_creation_and_deduplication = function( root_this ){
+							            console.log(">>>> TEST_data_requested_meta_data_obj_creation_and_deduplication() ");
+
+							            // make objecst 
+							            master_renderers_holder.renderers[ 0 ].setup_test_data_request_metadata_objects( root_this );            
+
+							            console.log("--- just set up some data request objects - they're "+master_data_holding_obj.requested_data__info_objects.length );
+
+							            // deduplicate 
+							            master_data_holding_obj.deduplicate__data_objects_about_what_data_to_fetch( root_this, master_data_holding_obj );
+
+							            console.log("\t --- master_data_holding_obj data request objects ( count : "+ master_data_holding_obj.requested_data__info_objects.length+") look like this : ");
+
+							            console.log( master_data_holding_obj.requested_data__info_objects );
+
+							            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication() : DONE ------- ");
+							        }
+
+
+							        var TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function = function( root_this ){
+							            console.log(">>>> TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function() ");
+
+							            // do the data request object checkign 
+							            TEST_data_requested_meta_data_obj_creation_and_deduplication( root_this );
+
+							            // then run the check / load / render function 
+							            master_data_holding_obj.check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame( root_this, master_data_holding_obj );
+
+							            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function() : DONE ------- ");
+							        }
+
 
 
 
@@ -1702,6 +1800,9 @@
 							- stop at the end.
 							- update the interface on each step
 							- update the play/stop button … 
+
+
+
 
 
 
