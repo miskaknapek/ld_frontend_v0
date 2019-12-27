@@ -1675,33 +1675,26 @@
 							- to-do : 
 									- path : 
 										- state change ( change in renderer or date change )
-													// MISSING MISSING MISSING 
-													// MISSING MISSING MISSING 
-													// MISSING MISSING MISSING 
+													// working…
 											-- central function ( in renderers or master data holder, or somewhere else ) : ask for needed data to render next frame
 												-- COULD IT BE THIS : 
 													-- master_renderers_holder__class / data__get_meta_data_on_data_needed_for_frame_render__from_renderers()
 														-- &&  each renderer has this function ( called by the above ) report_what_data_is_needed_for_current_frame_render()
-													// FIX
-													// FIX
-													// FIX
 											-- renderers should make data request metadata objects ( new root_this.data__data_needed_to_render_frame__metadata_obj … etc…  )
 													for the data they need : 
 													-- SEE ABOVE ( the function code is missing … )
 														-- I guess the eg PM renderer should eg check which time res, day is needed for the next frame, 
 															and make a data request metadata obj 
-
 														BUT BUT BUT …
 															- THE PM RENDERING OBJECT has this code . 
 																-- CHECK THE CODE 
+																	- DONE DONE DONE : 
 																	-- TRY RUNNING IT ( eg in test code! )
 																	-- AND/OR : try running it in the test code, and modifying the dates 
 																					( so you have more than just a single day of data to load )
 																					OR OR OR ( call the renderer to make new data request objects and change the dates
 																								in between the calls, and hopefully get new data request objects (current_data_index) )
-													// FIX
-													// FIX
-													// FIX
+
 
 											--- master data holder : check/load/process/render command 
 													- data request metadata objects are stored here : 

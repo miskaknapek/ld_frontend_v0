@@ -2704,24 +2704,31 @@
             particle_matter_rendering_object.report_what_data_is_needed_for_current_frame_render = function( root_this ){
                 console.log(">>>> report_what_data_is_needed_for_current_frame_render() ");
 
-                // make requested data info objec 
-                var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame__metadata_obj( root_this );
+                // only add if this rendering object is active
+                if( particle_matter_rendering_object.are_we_active === true ){
 
-                // --- what kind of data do we need ( 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
+                    // make requested data info objec 
+                    var data_requirements_for_rendering_curr_frame_obj = new root_this.data__data_needed_to_render_frame__metadata_obj( root_this );
 
-                // - what kind of data do we need - likely a single day 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
+                    // --- what kind of data do we need ( 
+                    data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_kind = root_this.data_source__kind__particle_matter;
 
-                // - time period 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+                    // - what kind of data do we need - likely a single day 
+                    data_requirements_for_rendering_curr_frame_obj.data_meta_data.data_temporality_needed = root_this.data_temporality_needed__preset__single_day_data;
 
-                // - day… 
-                data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
+                    // - time period 
+                    data_requirements_for_rendering_curr_frame_obj.data_meta_data.time_resolution_in_seconds = particle_matter_rendering_object.time_resolution_in_seconds;
+
+                    // - day… 
+                    data_requirements_for_rendering_curr_frame_obj.data_meta_data.datetime_info__single_time_period_needed = root_this.current_dateTime__as_YY_MM_DD_string;
 
 
-                // --- save to data holder 
-                root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+                    // --- save to data holder 
+                    root_this.master_data_holding_obj.requested_data__info_objects.push( data_requirements_for_rendering_curr_frame_obj );
+                }else{
+                    console.log(" --- current renderer obj ( "+particle_matter_rendering_object.renderer_self_description_txt+" ) is no active – not making data request metadata objects :( … sorry! ");
+                }
+
             }
 
 
@@ -2888,6 +2895,72 @@
         }
 
 
+        // new ( 20191227 )
+        var TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function__USING_built_in_renderer_obj_data_request_obj_creation = function( root_this ){
+            console.log(">>>> TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function__USING_built_in_renderer_obj_data_request_obj_creation() ");
+
+            // make some data request objects 
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+            // - add some duplicates ( by doing it again )
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+            // - add some duplicates ( by doing it again )
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+
+
+            console.log("--- just set up some data request objects - they're "+master_data_holding_obj.requested_data__info_objects.length );
+
+            // deduplicate 
+            master_data_holding_obj.deduplicate__data_objects_about_what_data_to_fetch( root_this, master_data_holding_obj );
+
+            console.log("\t --- master_data_holding_obj data request objects ( count : "+ master_data_holding_obj.requested_data__info_objects.length+") look like this : ");
+
+            console.log( master_data_holding_obj.requested_data__info_objects );
+
+            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication() : DONE ------- ");
+
+            // then run the check / load / render function 
+            master_data_holding_obj.check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame( root_this, master_data_holding_obj );
+
+            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function() : DONE ------- ");
+        }
+
+
+
+
+        // new ( 20191227 - PART 2 )
+        // - as above but also with the manual dffa request objects we set up originally. 
+        //    now there are plenty of test objets for deduplicating things. 
+        var TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function__USING_built_in_renderer_obj_data_request_obj_creation___WITH_MORE_DEDUPLICATION = function( root_this ){
+            console.log(">>>> TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function__USING_built_in_renderer_obj_data_request_obj_creation() ");
+
+            // make some data request objects 
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+            // - add some duplicates ( by doing it again )
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+            // - add some duplicates ( by doing it again )
+            master_renderers_holder.data__get_meta_data_on_data_needed_for_frame_render__from_renderers( root_this );
+
+
+            // and then set up some more test objects 
+            // ( about four )
+            master_renderers_holder.renderers[ 0 ].setup_test_data_request_metadata_objects( root_this );
+
+            console.log("--- just set up some data request objects - they're "+master_data_holding_obj.requested_data__info_objects.length );
+
+            // deduplicate 
+            master_data_holding_obj.deduplicate__data_objects_about_what_data_to_fetch( root_this, master_data_holding_obj );
+
+            console.log("\t --- master_data_holding_obj data request objects ( count : "+ master_data_holding_obj.requested_data__info_objects.length+") look like this : ");
+
+            console.log( master_data_holding_obj.requested_data__info_objects );
+
+            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication() : DONE ------- ");
+
+            // then run the check / load / render function 
+            master_data_holding_obj.check_if_data_needed_to_render_frame_is_present__if_not_load__if_yes_render_frame( root_this, master_data_holding_obj );
+
+            console.log("\n ||||| TEST_data_requested_meta_data_obj_creation_and_deduplication__AND__check__check_load_render_function() : DONE ------- ");
+        }
 
 
         // REMAKE! 
