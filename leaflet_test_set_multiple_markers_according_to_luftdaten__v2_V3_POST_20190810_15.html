@@ -154,11 +154,7 @@
 
 
 
-        <div id="playback_control_box__outer_outer">
-
-            <div id="playback_control_box__play_mode_button"></div>                      
-
-        </div>
+        <div id="playback_control_box__outer_outer"></div>
     
 
 
@@ -381,9 +377,7 @@
         var playback_control_box__outer_outer__ID_name = "playback_control_box__outer_outer";
         var playback_control_box__play_mode_button__DOM_obj = -1;
         var playback_control_box__play_mode_button__ID_name = "playback_control_box__play_mode_button";
-        // path to images
-        var playback_control_box__path_to_play_button_img = "";
-        var playback_control_box__path_to_NOTplay_button_img = "";
+
 
 
         //// smaller calendar 
@@ -522,11 +516,15 @@
         var playback__are_we_playing = false;
 
         // when we do the set interval, this is the object to call
-        var playback__interval_object = -1;
+        var playback__setinterval_object = -1;
 
         var playback__interval__interval_length_in_ms = 100;
 
         var playback__interval__time_slider_decimal_advancement_distance = curr_data_time_interval / total_seconds_in_a_day;
+
+        // path to images
+        var playback_control_box__path_to_play_button_img = "images/playback__play_button.svg";
+        var playback_control_box__path_to_pause_button_img = "images/playback__pause_button.svg";
 
 
 
@@ -1026,6 +1024,11 @@
 
         ///////// playback operations stuff ===========================
 
+        /*
+        playback_control_box__path_to_play_button_img
+        playback_control_box__path_to_pause_button_img
+        */
+
         var setup_playback_operations = function(){
             console.log(">>>> setup_playback_operations() ");
 
@@ -1033,6 +1036,7 @@
             playback__select_dom_elements();
 
             // --- bind the interactions to code 
+            playback__bind_interactivity_to_button();
 
         }
 
@@ -1078,7 +1082,7 @@
             playback_control_box__outer_outer__DOM_obj = document.getElementById( 
 playback_control_box__outer_outer__ID_name);
 
-            playback_control_box__play_mode_button__DOM_obj = document.getElementById( playback_control_box__play_mode_button__ID_name );
+            // playback_control_box__play_mode_button__DOM_obj = document.getElementById( playback_control_box__play_mode_button__ID_name );
         }
 
 
@@ -1096,6 +1100,141 @@ playback_control_box__outer_outer__ID_name);
 
         // --- bind interactions to playback 
 
+        var playback__bind_interactivity_to_button = function(){
+
+            touch_mouse_pointer_mouseup_events_array.map( function(d){
+                playback_control_box__outer_outer__DOM_obj.addEventListener( d, function(){ 
+
+                    console.log("\t --- playback CLICK/TOUCH! - please be interactivve :) - playback mode is currently === |"+playback__are_we_playing+"| - switching mode ");
+
+                    // switch playback modes
+                    playback__are_we_playing = !playback__are_we_playing;
+
+                    console.log("\t --- playback is currently === |"+playback__are_we_playing+"| - switching mode ")
+
+                    if( playback__are_we_playing === true ){
+
+                        console.log("\t\t - starting playback set interval ");
+
+                        playback__start_playback();
+
+                    }else if( playback__are_we_playing === false ){
+
+                        console.log("\t\t - stopping playback set interval ");
+
+                        playback__stop_playback();
+                    }
+
+                    // current_date__advance_by_one_day();
+
+                    // small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+                    // console.log("--- DON'T FORGET TO UPDATE THE DAY OF THE VISUALISTION! ");
+
+                    // // finally, try loading it! 
+                    // check_if_date_available__and_load_and_setup_if_needed( current_dateTime__as_Date_obj );
+
+
+                    }, false );
+                });
+        }
+
+
+        // --- playback acion 
+
+
+        // start
+        var playback__start_playback = function(){
+            console.log(">>>> playback__start_playback() - playback status is : |"+playback__are_we_playing+"|");
+
+            // figure out how long the last point in the day, that we can play back, is
+            // useful, partly, if we stop playback at the end of the day. 
+            calculate__current_UTC_time_as_decimal_position_relative_to_length_of_day();
+
+            // start playback
+            playback__setinterval_object = setInterval( playback__setinterval_function, playback__interval__interval_length_in_ms );
+
+            // make set timout 
+
+            // update button  - set to pause ( as we're playing )
+            playback_control_box__outer_outer__DOM_obj.style.backgroundImage = "url("+playback_control_box__path_to_pause_button_img+")";
+        }
+
+
+        // stop/pause
+        var playback__stop_playback = function(){
+            console.log(">>>> playback__stop_playback() - playback status is : |"+playback__are_we_playing+"|- STOPPING PLAYBACK ");
+
+            playback__are_we_playing = false;
+
+            console.log("\t - playback__are_we_playing is now : |"+playback__are_we_playing+"|" );
+
+            // stop playback
+            clearInterval( playback__setinterval_object );
+
+            // update button ( set to play, as we're paused )
+            playback_control_box__outer_outer__DOM_obj.style.backgroundImage = "url("+playback_control_box__path_to_play_button_img+")";
+        }
+
+        // --- function called during the given set interval loop 
+
+        /*
+            playback__interval__interval_length_in_ms
+            playback__interval__time_slider_decimal_advancement_distance
+        */
+
+
+
+        // call this on each PLAYBACK SET INTERVAL LOOP
+        var playback__setinterval_function = function(){
+            console.log(">>>> playback__setinterval_function() - currently at time slider decimal position "+current_timeslider_position_on_bar_as_decimal );
+            //
+
+            // check the playback position vs the last playable position
+            // - stop the playback if it's at or beyond the last position. 
+            if( current_timeslider_position_on_bar_as_decimal >= 1 ){
+
+                // set slider decimal position at the end … 
+
+                // - set the timeslider decimal position to the last point where there's data 
+                //  ( do make sure this is calculated properly )
+                current_timeslider_position_on_bar_as_decimal = 0; 
+            /*
+                // - stop playback
+                playback__stop_playback();
+            */
+
+                // - update interface to show the stoppage? … or are we sort of already there? …visually?
+
+            } // if the playback position is not at the end, then go play :) 
+            else{
+
+                //play :) 
+
+                // -- update interface with current position 
+
+                // get relevant data index according to the slider decimal position 
+                get_current_day_relative_data_index__based_on_relative_slider_position();
+
+                // get time of day according to current time selector position 
+                // GET THIS ACCORDING TO THE CURRENT DATA SAMPLE INDEX? 
+                get_time_of_day_accoridng_to_curr_time_slider_decimal_position();
+
+                // update the text in the slider
+                update_time_slider_text_to_show_current_time_of_day();
+
+                // update the slider position accordingly 
+                set_timeslide_current_position_market_to_current_position_in_data();
+
+                // and draw something? 
+                draw_from_time_data__object_oriented_version();
+
+
+                // --- finnisage, update the timeslider position 
+                current_timeslider_position_on_bar_as_decimal += playback__interval__time_slider_decimal_advancement_distance;
+
+            }
+        }
 
 
 

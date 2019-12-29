@@ -1794,6 +1794,33 @@
 							- update the interface on each step
 							- update the play/stop button … 
 
+						- 
+							https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+
+
+			- Part Two : 2019.12.28
+				- How to make a button : 
+					- make the html and possibly illustration
+						- in design and js generating html  
+					- make code ( see above )
+
+
+			- Part Thre - 2019.12.29 
+				- Remember to do : 
+					- (properly) do the checks on playback that we've not exceeded the end of day. 
+					- update the interface! 
+						- please list the steps :) 
+						- get day data index |get_current_day_relative_data_index__based_on_relative_slider_position()|
+						- set the |current_timeslider_position_on_bar_as_decimal| as relevant
+							- CHECK HOW THIS RELATES TO DAY DATA INDEX Etc…
+						- get the relevant time of day ( good for interface updaes ) with |get_time_of_day_accoridng_to_curr_time_slider_decimal_position()|
+						- update the interface text |update_time_slider_text_to_show_current_time_of_day()|
+						- update the bar position etc? |set_timeslide_current_position_market_to_current_position_in_data()|
+
+						- anaaand… update the map |draw_from_time_data__object_oriented_version()|
+
+
+
 
 
 
