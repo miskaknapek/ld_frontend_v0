@@ -515,6 +515,9 @@
 
         var playback__are_we_playing = false;
 
+        // new year's edition : continue playing until 20xx.1.1 when starting to play on 20xx.12.31 :) 
+        var playback__new_years_eve_edition__continue_playing_until_0101 = true;
+
         // when we do the set interval, this is the object to call
         var playback__setinterval_object = -1;
 
@@ -1194,11 +1197,46 @@ playback_control_box__outer_outer__ID_name);
             // - stop the playback if it's at or beyond the last position. 
             if( current_timeslider_position_on_bar_as_decimal >= 1 ){
 
-                // set slider decimal position at the end … 
+                // is it new year's eve and we want to continue playing until 20xx.1.1 ? 
+                if( playback__new_years_eve_edition__continue_playing_until_0101 === true ){
 
-                // - set the timeslider decimal position to the last point where there's data 
-                //  ( do make sure this is calculated properly )
-                current_timeslider_position_on_bar_as_decimal = 0; 
+                    // -- get the day and month 
+
+                    var curr_day = current_dateTime__as_Date_obj.getDate();
+                    var curr_month = current_dateTime__as_Date_obj.getMonth();
+
+                    // - do different things depending on the date 
+                    // ( off by one for the months )
+                    if( curr_month === 11 && curr_day === 31 ){
+
+                        console.log("\t --- PLAYING THROUGH NYE TO 20xx0101")
+
+                        // go forward one day :) 
+
+                        current_date__advance_by_one_day();
+
+                        small_calendar__set_curr_YEAR_MONTH_AND_DAY__text_to_current_date();
+
+                        console.log("--- DON'T FORGET TO UPDATE THE DAY OF THE VISUALISTION! ");
+
+                        // finally, try loading it! 
+                        check_if_date_available__and_load_and_setup_if_needed( current_dateTime__as_Date_obj );                        
+                    } // as normal, when not NYE playthrough
+                    else{
+
+                        current_timeslider_position_on_bar_as_decimal = 0; 
+                    }
+
+
+                } // or do we continue as before - just loop the same day? 
+                else if( playback__new_years_eve_edition__continue_playing_until_0101 === true ){
+                    // set slider decimal position at the end … 
+
+                    // - set the timeslider decimal position to the last point where there's data 
+                    //  ( do make sure this is calculated properly )
+                    current_timeslider_position_on_bar_as_decimal = 0; 
+                }
+
             /*
                 // - stop playback
                 playback__stop_playback();
@@ -1851,7 +1889,7 @@ playback_control_box__outer_outer__ID_name);
             touch_mouse_pointer_mouseup_events_array.map( function(d){
                 date_selection_box__day_selection__arrow_left__DOM_obj.addEventListener( d, function(){ 
 
-                    console.log("--- please advance the small calendar date by a day");
+                    console.log("--- please retract the small calendar date by a day");
 
                     current_date__retract_by_one_day();
 
